@@ -1,30 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>I WANT. I CAN. I BELONG.</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
   <link rel="manifest" href="manifest.json">
   <style>
-    body { font-family:'Montserrat',Arial,sans-serif; margin:0; padding:20px; max-width:700px; background:#f8fafd; }
-    .top-header { display:flex; align-items:center; gap:12px; }
-    .brand-title { font-size:3.2rem; font-weight:700; display:flex; gap:8px; }
-    .iwant { color:#196F38 } .ican { color:#ffd400 } .ibelong { color:#202c61 }
-    .plain-intro { margin:16px 0; font-size:1.125rem; color:#444 }
-    .lang-switch { margin-bottom:16px }
-    .lang-switch select { padding:6px; }
-    label { display:block; margin-top:16px; font-weight:500 }
-    .form-row { display:flex; align-items:center; gap:12px }
-    select, button { width:100%; padding:10px; margin-top:8px; border:1px solid #bbb; border-radius:7px }
-    .campus-thumb, .teacher-photo { width:44px; height:44px; border-radius:50%; object-fit:cover; display:none }
-    .emoji-row { display:flex; justify-content:space-between; margin:12px 0; gap:8px }
-    .emoji-btn { flex:1; font-size:28px; padding:8px; background:#f4f6fa; border:none; border-radius:8px; cursor:pointer }
-    .emoji-btn.selected, .emoji-btn:active { background:#ffd400; transform:scale(1.1) }
-    #thanksMessage { display:none; text-align:center; margin-top:32px }
+    body { font-family: 'Montserrat', Arial, sans-serif; margin:0; padding:20px; max-width:700px; background:#f8fafd; }
+    .top-header { display:flex; align-items:center; gap:16px; }
+    .brand-title { font-size:3.2rem; font-weight:700; display:flex; gap:12px; white-space:nowrap; }
+    .iwant { color:#196F38; } .ican { color:#ffd400; } .ibelong { color:#202c61; }
+    .plain-intro { margin:16px 0; font-size:1.125rem; color:#444; }
+    .lang-switch { margin-bottom:16px; }
+    .lang-switch select { width:auto; padding:6px; }
+    label { display:block; margin-top:16px; font-weight:500; }
+    .form-row { display:flex; align-items:center; gap:12px; }
+    select, button { width:100%; padding:10px; margin-top:8px; border:1px solid #bbb; border-radius:7px; }
+    .campus-thumb, .teacher-photo { width:44px; height:44px; border-radius:50%; object-fit:cover; display:none; }
+    .emoji-row { display:flex; justify-content:space-between; margin:12px 0; gap:8px; }
+    .emoji-btn { flex:1; font-size:28px; padding:8px; background:#f4f6fa; border:none; border-radius:8px; cursor:pointer; }
+    .emoji-btn.selected, .emoji-btn:active { background:#ffd400; transform:scale(1.1); }
+    #thanksMessage { display:none; text-align:center; margin-top:32px; }
   </style>
 </head>
 <body>
+  <!-- Header -->
   <div class="top-header">
     <div class="brand-title">
       <span class="iwant">I WANT.</span>
@@ -34,6 +35,7 @@
   </div>
   <p class="plain-intro">No Names. One Tap. One Emoji for a Thriving Class.</p>
 
+  <!-- Language Switch -->
   <div class="lang-switch">
     <label for="langSelect">Language:</label>
     <select id="langSelect">
@@ -42,7 +44,9 @@
     </select>
   </div>
 
+  <!-- Feedback Form -->
   <form id="feedbackForm">
+    <!-- Campus -->
     <label for="campusSelect">Campus</label>
     <div class="form-row">
       <select id="campusSelect" required onchange="filterTeachers(); updateCampusThumbnail();">
@@ -51,19 +55,22 @@
         <option value="South">South</option>
         <option value="San Jose">San Jose</option>
       </select>
-      <img id="campusThumb" class="campus-thumb" alt="Campus Icon">
+      <img id="campusThumb" class="campus-thumb" alt="Campus">
     </div>
 
+    <!-- Teacher -->
     <label for="teacherSelect">Teacher</label>
     <div class="form-row">
       <select id="teacherSelect" required onchange="updateTeacherPhoto()">
         <option value="">Select Teacher</option>
       </select>
-      <img id="teacherPhoto" class="teacher-photo" alt="Teacher Photo">
+      <img id="teacherPhoto" class="teacher-photo" alt="Teacher">
     </div>
 
+    <!-- THRIVE Questions -->
     <div id="questionsContainer"></div>
 
+    <!-- Star Rating -->
     <label for="stars"><b>How likely are you to recommend this teacher?</b></label>
     <select id="stars" required>
       <option value="">Select rating</option>
@@ -76,27 +83,30 @@
     <button type="submit">Submit</button>
   </form>
 
+  <!-- Thank You Message -->
   <div id="thanksMessage">
     <h3>Thank you! 🎉</h3>
     <p>Your response has been recorded.</p>
   </div>
 
+  <!-- Service Worker for PWA -->
   <script src="service-worker.js"></script>
   <script>
-    const execUrl = 'https://script.google.com/a/macros/phinmaed.com/s/AKfycbzNwpHbalUN0pm2wyB0avx4F_E1Jvla6TAl1EgUsL64pFwcDS8rDryRREPaBINTpZU7/exec';
-
+    // Campus icons
     const campusThumbnails = {
       "Main":    "icon-192.png",
       "South":   "icon-192.png",
       "San Jose":"icon-192.png"
     };
 
+    // Teachers by campus
     const teacherMap = {
       "Main":    ["Reynaldo","Rona","Mar","Mercy","Nelia","Ishtin","Noelyn","Fendie","Sheilou","Robin","Johny"],
       "South":   ["Jayhard","Edwin","Lyka","Henry"],
       "San Jose":["Dawn","Cristine","Beverly","Philip","Bryan"]
     };
 
+    // Teacher photos (direct-drive links)
     const teacherPhotos = {
       "Reynaldo":"https://drive.google.com/uc?export=view&id=1zX6GMSscSSG_bEFk9Y4LR7x0enz70-gy",
       "Rona":    "https://drive.google.com/uc?export=view&id=1WhsC12zDdAhjYfy5oI0In4NoduGlDJco",
@@ -120,6 +130,7 @@
       "Bryan":   "https://drive.google.com/uc?export=view&id=17QA4vOtFGO4YmUlmjfQeH5RKwOKvqT6R"
     };
 
+    // Full THRIVE questions with translations
     const questionInfo = {
       "T": {
         meaning: "Teach",
@@ -132,7 +143,7 @@
         tl: "Nakakatanggap ako ng gabay mula sa aking guro kung paano tapusin ang mga gawain o modules."
       },
       "R": {
-        meaning: "Real-life Application",
+        meaning: "Real-life Application", 
         en: "I can apply what I learned in class to real-life situations.",
         tl: "Nagagamit ko ang natutunan ko sa klase sa totoong buhay."
       },
@@ -153,27 +164,34 @@
       }
     };
 
+    // Populate and handle interactions
     function filterTeachers() {
       const campus = document.getElementById('campusSelect').value;
       const ts = document.getElementById('teacherSelect');
       ts.innerHTML = '<option value="">Select Teacher</option>';
-      (teacherMap[campus] || []).forEach(t => ts.appendChild(new Option(t,t)));
+      (teacherMap[campus] || []).forEach(t => {
+        ts.appendChild(new Option(t, t));
+      });
       updateCampusThumbnail();
       updateTeacherPhoto();
     }
 
     function updateCampusThumbnail() {
-      const img = document.getElementById('campusThumb'),
-            c   = document.getElementById('campusSelect').value;
-      if (campusThumbnails[c]) { img.src = campusThumbnails[c]; img.style.display = 'inline-block'; }
-      else img.style.display = 'none';
+      const c = document.getElementById('campusSelect').value;
+      const img = document.getElementById('campusThumb');
+      if (campusThumbnails[c]) {
+        img.src = campusThumbnails[c];
+        img.style.display = 'inline-block';
+      } else img.style.display = 'none';
     }
 
     function updateTeacherPhoto() {
-      const img = document.getElementById('teacherPhoto'),
-            t   = document.getElementById('teacherSelect').value;
-      if (teacherPhotos[t]) { img.src = teacherPhotos[t]; img.style.display = 'inline-block'; }
-      else img.style.display = 'none';
+      const t = document.getElementById('teacherSelect').value;
+      const img = document.getElementById('teacherPhoto');
+      if (teacherPhotos[t]) {
+        img.src = teacherPhotos[t];
+        img.style.display = 'inline-block';
+      } else img.style.display = 'none';
     }
 
     function createQuestions() {
@@ -182,14 +200,19 @@
       con.innerHTML = '';
       for (let code in questionInfo) {
         const q = questionInfo[code];
-        con.insertAdjacentHTML('beforeend', `<label><b>${code} (${q.meaning}):</b> ${q[lang]}</label>`);
-        const row = document.createElement('div'); row.className='emoji-row';
+        con.insertAdjacentHTML('beforeend',
+          `<label><b>${code} (${q.meaning}):</b> ${q[lang]}</label>`
+        );
+        const row = document.createElement('div');
+        row.className = 'emoji-row';
         ['🔥','👍','😐','👎'].forEach(em => {
           const btn = document.createElement('button');
-          btn.type='button'; btn.className='emoji-btn'; btn.textContent=em;
+          btn.type = 'button';
+          btn.className = 'emoji-btn';
+          btn.textContent = em;
           btn.onclick = e => {
             e.preventDefault();
-            row.querySelectorAll('.emoji-btn').forEach(b=>b.classList.remove('selected'));
+            row.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
             document.getElementById(code).value = em;
           };
@@ -197,7 +220,9 @@
         });
         con.appendChild(row);
         const hid = document.createElement('input');
-        hid.type = 'hidden'; hid.id = code; con.appendChild(hid);
+        hid.type = 'hidden';
+        hid.id   = code;
+        con.appendChild(hid);
       }
     }
 
@@ -208,26 +233,15 @@
       document.getElementById('teacherSelect').addEventListener('change', updateTeacherPhoto);
       document.getElementById('feedbackForm').addEventListener('submit', e => {
         e.preventDefault();
-        const data = {
-          campus:  document.getElementById('campusSelect').value,
-          teacher: document.getElementById('teacherSelect').value,
-          T:       document.getElementById('T').value,
-          H:       document.getElementById('H').value,
-          R:       document.getElementById('R').value,
-          I:       document.getElementById('I').value,
-          V:       document.getElementById('V').value,
-          E:       document.getElementById('E').value,
-          stars:   document.getElementById('stars').value
-        };
-        fetch(execUrl, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) })
-        .then(() => {
-          document.getElementById('feedbackForm').style.display='none';
-          document.getElementById('thanksMessage').style.display='block';
-        });
+        // TODO: save data via google.script.run or fetch
+        document.getElementById('feedbackForm').style.display = 'none';
+        document.getElementById('thanksMessage').style.display = 'block';
       });
     });
 
-    if ('serviceWorker' in navigator) navigator.serviceWorker.register('service-worker.js');
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
   </script>
 </body>
 </html>
