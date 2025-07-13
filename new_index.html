@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>I WANT. I CAN. I BELONG.</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+  <style>
+    body { font-family:'Montserrat',Arial,sans-serif; margin:0; padding:20px; max-width:700px; background:#f8fafd; }
+    .top-header { display:flex; align-items:center; gap:12px; }
+    .brand-title { font-size:3.2rem; font-weight:700; display:flex; gap:8px; }
+    .iwant { color:#196F38 } .ican { color:#ffd400 } .ibelong { color:#202c61 }
+    .plain-intro { margin:16px 0; font-size:1.125rem; color:#444 }
+    .lang-switch { margin-bottom:16px }
+    .lang-switch select { padding:6px; }
+    label { display:block; margin-top:16px; font-weight:500 }
+    .form-row { display:flex; align-items:center; gap:12px }
+    select, button { width:100%; padding:10px; margin-top:8px; border:1px solid #bbb; border-radius:7px }
+    .campus-thumb, .teacher-photo { width:44px; height:44px; border-radius:50%; object-fit:cover; display:none }
+    .emoji-row { display:flex; justify-content:space-between; margin:12px 0; gap:8px }
+    .emoji-btn { flex:1; font-size:28px; padding:8px; background:#f4f6fa; border:none; border-radius:8px; cursor:pointer }
+    .emoji-btn.selected, .emoji-btn:active { background:#ffd400; transform:scale(1.1) }
+    #thanksMessage { display:none; text-align:center; margin-top:32px }
+  </style>
+</head>
+<body>
+  <div class="top-header">
+    <div class="brand-title">
+      <span class="iwant">I WANT.</span>
+      <span class="ican">I CAN.</span>
+      <span class="ibelong">I BELONG.</span>
+    </div>
+  </div>
+  <p class="plain-intro">No Names. One Tap. One Emoji for a Thriving Class.</p>
+
+  <div class="lang-switch">
+    <label for="langSelect">Language:</label>
+    <select id="langSelect">
+      <option value="en">English</option>
+      <option value="tl">Tagalog</option>
+    </select>
+  </div>
+
+  <form id="feedbackForm">
+    <label for="campusSelect">Campus</label>
+    <div class="form-row">
+      <select id="campusSelect" required onchange="filterTeachers(); updateCampusThumbnail();">
+        <option value="">Select Campus</option>
+        <option value="Main">Main</option>
+        <option value="South">South</option>
+        <option value="San Jose">San Jose</option>
+      </select>
+      <img id="campusThumb" class="campus-thumb" alt="Campus Icon">
+    </div>
+
+    <label for="teacherSelect">Teacher</label>
+    <div class="form-row">
+      <select id="teacherSelect" required onchange="updateTeacherPhoto()">
+        <option value="">Select Teacher</option>
+      </select>
+      <img id="teacherPhoto" class="teacher-photo" alt="Teacher Photo">
+    </div>
+
+    <div id="questionsContainer"></div>
+
+    <label for="stars"><b>How likely are you to recommend this teacher?</b></label>
+    <select id="stars" required>
+      <option value="">Select rating</option>
+      <option value="4">⭐⭐⭐⭐</option>
+      <option value="3">⭐⭐⭐</option>
+      <option value="2">⭐⭐</option>
+      <option value="1">⭐</option>
+    </select>
+
+    <button type="submit">Submit</button>
+  </form>
+
+  <div id="thanksMessage">
+    <h3>Thank you! 🎉</h3>
+    <p>Your response has been recorded.</p>
+  </div>
+
+  <script src="service-worker.js"></script>
+  <script>
+    const execUrl = 'https://script.google.com/a/macros/phinmaed.com/s/AKfycbzNwpHbalUN0pm2wyB0avx4F_E1Jvla6TAl1EgUsL64pFwcDS8rDryRREPaBINTpZU7/exec';
+
+    const campusThumbnails = {
+      "Main":    "icon-192.png",
+      "South":   "icon-192.png",
+      "San Jose":"icon-192.png"
+    };
+
+    const teacherMap = {
+      "Main":    ["Reynaldo","Rona","Mar","Mercy","Nelia","Ishtin","Noelyn","Fendie","Sheilou","Robin","Johny"],
+      "South":   ["Jayhard","Edwin","Lyka","Henry"],
+      "San Jose":["Dawn","Cristine","Beverly","Philip","Bryan"]
+    };
+
+    const teacherPhotos = {
+      "Reynaldo":"https://drive.google.com/uc?export=view&id=1zX6GMSscSSG_bEFk9Y4LR7x0enz70-gy",
+      "Rona":    "https://drive.google.com/uc?export=view&id=1WhsC12zDdAhjYfy5oI0In4NoduGlDJco",
+      "Mar":     "https://drive.google.com/uc?export=view&id=16zvdiiJVsA_-47mvlMK2GuBgcyDKca_W",
+      "Mercy":   "https://drive.google.com/uc?export=view&id=12inv0_BPy1rGkYQTqnuEwCzetusXe9o7",
+      "Nelia":   "https://drive.google.com/uc?export=view&id=1J6zciu8WEF_4L7kWt_CrnMipUSn-uL-2",
+      "Ishtin":  "https://drive.google.com/uc?export=view&id=1YYO9byASJgqxoLJD5Zcp8gcs9b9GQBOU",
+      "Noelyn":  "https://drive.google.com/uc?export=view&id=1517byREUzKKMQRiBiKQuxnGCMR7S2DOn",
+      "Fendie":  "https://drive.google.com/uc?export=view&id=1pxsvHRRK1nOwLV_ZX3Yl6ZHDl5RR3f8L",
+      "Sheilou": "https://drive.google.com/uc?export=view&id=1bI3T6UmlNAw3To_WcjGJlGPMY2hCjc9J",
+      "Robin":   "https://drive.google.com/uc?export=view&id=1RIiWXPsRYcynFjLmMLbbq14uA7axlv17",
+      "Johny":   "https://drive.google.com/uc?export=view&id=1uYQN16ap8g-OxR0gEMrOsDX1S0KlGnhl",
+      "Jayhard": "https://drive.google.com/uc?export=view&id=1UZ8UJzVreRPC8Mdlo-dT2yPQDVXVOu3W",
+      "Edwin":   "https://drive.google.com/uc?export=view&id=1g7HiWsHOH2a3dAqoEd8dfbuBxsEDLDJK",
+      "Lyka":    "https://drive.google.com/uc?export=view&id=10ZUqbTNQBRtvLFegZylYcpIiDF-U6obn",
+      "Henry":   "https://drive.google.com/uc?export=view&id=13iJnxu7LHa_bVJYrQb3mayBmGj0MGwm_",
+      "Dawn":    "https://drive.google.com/uc?export=view&id=1p_aeeFRrcOOKMruBBcwd2mWVvsz09aIs",
+      "Cristine":"https://drive.google.com/uc?export=view&id=1p_aeeFRrcOOKMruBBcwd2mWVvsz09aIs",
+      "Beverly": "https://drive.google.com/uc?export=view&id=1p_aeeFRrcOOKMruBBcwd2mWVvsz09aIs",
+      "Philip":  "https://drive.google.com/uc?export=view&id=16zfukMacQHAkZn-HUgVoUxRHwlhUevM-",
+      "Bryan":   "https://drive.google.com/uc?export=view&id=17QA4vOtFGO4YmUlmjfQeH5RKwOKvqT6R"
+    };
+
+    const questionInfo = {
+      "T": {
+        meaning: "Teach",
+        en: "I understand the lessons with the help of activities provided by my teacher.",
+        tl: "Naiintindihan ko ang mga aralin sa tulong ng mga gawain na ibinibigay ng aking guro."
+      },
+      "H": {
+        meaning: "Help",
+        en: "I receive guidance from my teacher on how to complete the activities/tasks/modules.",
+        tl: "Nakakatanggap ako ng gabay mula sa aking guro kung paano tapusin ang mga gawain o modules."
+      },
+      "R": {
+        meaning: "Real-life Application",
+        en: "I can apply what I learned in class to real-life situations.",
+        tl: "Nagagamit ko ang natutunan ko sa klase sa totoong buhay."
+      },
+      "I": {
+        meaning: "Interaction",
+        en: "I was actively involved in class activities because the questions were interesting and challenging.",
+        tl: "Aktibo akong nakilahok sa mga aktibidad sa klase dahil ang mga tanong ng aking guro ay kawili-wili."
+      },
+      "V": {
+        meaning: "Voice",
+        en: "I felt comfortable sharing my ideas and questions.",
+        tl: "Komportable akong ibahagi ang aking mga ideya at tanong."
+      },
+      "E": {
+        meaning: "Encouragement",
+        en: "I received feedback from my teacher that encouraged me to improve.",
+        tl: "Ang puna mula sa aking guro ay nakapagbigay-lakas upang pagbutihin ko ang aking gawa."
+      }
+    };
+
+    function filterTeachers() {
+      const campus = document.getElementById('campusSelect').value;
+      const ts = document.getElementById('teacherSelect');
+      ts.innerHTML = '<option value="">Select Teacher</option>';
+      (teacherMap[campus] || []).forEach(t => ts.appendChild(new Option(t,t)));
+      updateCampusThumbnail();
+      updateTeacherPhoto();
+    }
+
+    function updateCampusThumbnail() {
+      const img = document.getElementById('campusThumb'),
+            c   = document.getElementById('campusSelect').value;
+      if (campusThumbnails[c]) { img.src = campusThumbnails[c]; img.style.display = 'inline-block'; }
+      else img.style.display = 'none';
+    }
+
+    function updateTeacherPhoto() {
+      const img = document.getElementById('teacherPhoto'),
+            t   = document.getElementById('teacherSelect').value;
+      if (teacherPhotos[t]) { img.src = teacherPhotos[t]; img.style.display = 'inline-block'; }
+      else img.style.display = 'none';
+    }
+
+    function createQuestions() {
+      const lang = document.getElementById('langSelect').value;
+      const con  = document.getElementById('questionsContainer');
+      con.innerHTML = '';
+      for (let code in questionInfo) {
+        const q = questionInfo[code];
+        con.insertAdjacentHTML('beforeend', `<label><b>${code} (${q.meaning}):</b> ${q[lang]}</label>`);
+        const row = document.createElement('div'); row.className='emoji-row';
+        ['🔥','👍','😐','👎'].forEach(em => {
+          const btn = document.createElement('button');
+          btn.type='button'; btn.className='emoji-btn'; btn.textContent=em;
+          btn.onclick = e => {
+            e.preventDefault();
+            row.querySelectorAll('.emoji-btn').forEach(b=>b.classList.remove('selected'));
+            btn.classList.add('selected');
+            document.getElementById(code).value = em;
+          };
+          row.appendChild(btn);
+        });
+        con.appendChild(row);
+        const hid = document.createElement('input');
+        hid.type = 'hidden'; hid.id = code; con.appendChild(hid);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      createQuestions();
+      document.getElementById('langSelect').addEventListener('change', createQuestions);
+      document.getElementById('campusSelect').addEventListener('change', filterTeachers);
+      document.getElementById('teacherSelect').addEventListener('change', updateTeacherPhoto);
+      document.getElementById('feedbackForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const data = {
+          campus:  document.getElementById('campusSelect').value,
+          teacher: document.getElementById('teacherSelect').value,
+          T:       document.getElementById('T').value,
+          H:       document.getElementById('H').value,
+          R:       document.getElementById('R').value,
+          I:       document.getElementById('I').value,
+          V:       document.getElementById('V').value,
+          E:       document.getElementById('E').value,
+          stars:   document.getElementById('stars').value
+        };
+        fetch(execUrl, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) })
+        .then(() => {
+          document.getElementById('feedbackForm').style.display='none';
+          document.getElementById('thanksMessage').style.display='block';
+        });
+      });
+    });
+
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('service-worker.js');
+  </script>
+</body>
+</html>
