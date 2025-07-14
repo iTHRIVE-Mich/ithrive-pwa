@@ -1,247 +1,244 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>I WANT. I CAN. I BELONG.</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
-  <link rel="manifest" href="manifest.json">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="manifest" href="manifest.json" />
   <style>
-    body { font-family: 'Montserrat', Arial, sans-serif; margin:0; padding:20px; max-width:700px; background:#f8fafd; }
-    .top-header { display:flex; align-items:center; gap:16px; }
-    .brand-title { font-size:3.2rem; font-weight:700; display:flex; gap:12px; white-space:nowrap; }
-    .iwant { color:#196F38; } .ican { color:#ffd400; } .ibelong { color:#202c61; }
-    .plain-intro { margin:16px 0; font-size:1.125rem; color:#444; }
-    .lang-switch { margin-bottom:16px; }
-    .lang-switch select { width:auto; padding:6px; }
-    label { display:block; margin-top:16px; font-weight:500; }
-    .form-row { display:flex; align-items:center; gap:12px; }
-    select, button { width:100%; padding:10px; margin-top:8px; border:1px solid #bbb; border-radius:7px; }
-    .campus-thumb, .teacher-photo { width:44px; height:44px; border-radius:50%; object-fit:cover; display:none; }
-    .emoji-row { display:flex; justify-content:space-between; margin:12px 0; gap:8px; }
-    .emoji-btn { flex:1; font-size:28px; padding:8px; background:#f4f6fa; border:none; border-radius:8px; cursor:pointer; }
+    /* Global & Layout */
+    body { margin:0; background:#f4f6fa; font-family:'Montserrat', Arial, sans-serif; }
+    .layout { border-left:6px solid #0D47A1; min-height:100vh; }
+
+    /* HEADER & SLOGAN */
+    header { background:#fff; box-shadow:0 2px 5px rgba(0,0,0,0.1); padding:10px 20px; display:flex; align-items:center; }
+    header img { height:50px; margin-right:15px; }
+    .slogan-container { flex:1; }
+    .slogan { font-size:2rem; font-weight:700; display:flex; gap:0.5em; }
+    .slogan .iwant   { color:#196F38; }
+    .slogan .ican    { color:#ffd400; }
+    .slogan .ibelong { color:#202c61; }
+    .subline { margin-top:4px; font-size:1rem; color:#444; }
+
+    /* CARD CONTAINERS */
+    .page { display:none; padding:20px; max-width:600px; margin:30px auto; background:#fff; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.08); }
+    .page.active { display:block; }
+
+    h2 { text-align:center; margin-bottom:20px; }
+    p { text-align:center; color:#444; }
+
+    /* SPLASH */
+    .splash-container { position:relative; text-align:center; }
+    .splash-container img { width:100%; border-radius:8px; }
+    .splash-text { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:3rem; font-weight:700; white-space:nowrap; }
+    .splash-text .i      { color:#ffffff; }
+    .splash-text .thrive {
+      background:linear-gradient(to right, #196F38 0%,#196F38 33%,#ffd400 33%,#ffd400 66%,#202c61 66%,#202c61 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    }
+    #page-splash button { margin-top:20px; width:100%; padding:15px; font-size:1.1rem; background:#196F38; color:#fff; border:none; border-radius:8px; cursor:pointer; }
+
+    /* GRID BUTTONS (Smaller tiles) */
+    .grid { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; }
+    .grid button {
+      width:120px;                 /* reduced from 140px */
+      height:120px;                /* reduced from 140px */
+      padding:0; border:none; border-radius:12px; overflow:hidden;
+      background:#eee; cursor:pointer; transition:transform .1s;
+      display:flex; flex-direction:column; align-items:center; justify-content:flex-end;
+    }
+    .grid button:hover { transform:scale(1.05); }
+    .grid img {
+      width:100%;
+      height:80px;                 /* cap image height so label fits */
+      object-fit:cover;
+    }
+    .grid div {
+      background:rgba(255,255,255,0.8);
+      width:100%; text-align:center; padding:4px 0; font-weight:500;
+    }
+
+    /* BUTTONS */
+    .btn { width:100%; padding:12px; font-size:1rem; margin:15px 0; border:none; border-radius:8px; color:#fff; cursor:pointer; }
+    .btn.back { background:#196F38; }
+    .btn.next { background:#196F38; }
+
+    /* Emoji Ratings */
+    .emoji-row { display:flex; justify-content:space-between; margin:14px 0; gap:12px; }
+    .emoji-btn { font-size:38px; width:56px; height:56px; background:#f4f6fa; border:none; border-radius:12px; cursor:pointer; transition:transform .1s; }
     .emoji-btn.selected, .emoji-btn:active { background:#ffd400; transform:scale(1.1); }
-    #thanksMessage { display:none; text-align:center; margin-top:32px; }
+
+    /* Dropdown */
+    select { width:100%; padding:10px; margin-top:10px; border-radius:7px; border:1px solid #bbb; }
+
+    /* Thank You */
+    #page-thanks h2 { margin-bottom:10px; }
   </style>
 </head>
 <body>
-  <!-- Header -->
-  <div class="top-header">
-    <div class="brand-title">
-      <span class="iwant">I WANT.</span>
-      <span class="ican">I CAN.</span>
-      <span class="ibelong">I BELONG.</span>
-    </div>
+  <div class="layout">
+
+    <!-- HEADER -->
+    <header>
+      <img src="https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/logo.png" alt="CAS Logo">
+      <div class="slogan-container">
+        <div class="slogan">
+          <span class="iwant">I WANT.</span>
+          <span class="ican">I CAN.</span>
+          <span class="ibelong">I BELONG.</span>
+        </div>
+        <div class="subline">No Names. One Tap. One Emoji for a Thriving Class.</div>
+      </div>
+    </header>
+
+    <!-- SPLASH PAGE -->
+    <section id="page-splash" class="page active">
+      <div class="splash-container">
+        <img src="https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/cover.png" alt="Welcome">
+        <div class="splash-text"><span class="i">i</span><span class="thrive">THRIVE</span></div>
+      </div>
+      <button onclick="goTo('page-campus')">Tap to Begin</button>
+    </section>
+
+    <!-- PAGE 1: CAMPUS -->
+    <section id="page-campus" class="page">
+      <h2>Select Campus</h2>
+      <div class="grid">
+        <button onclick="chooseCampus('Main')">
+          <img src="https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/Main.png" alt="Main">
+          <div>Main</div>
+        </button>
+        <button onclick="chooseCampus('South')">
+          <img src="https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/South.png" alt="South">
+          <div>South</div>
+        </button>
+        <button onclick="chooseCampus('San Jose')">
+          <img src="https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/San Jose.png" alt="San Jose">
+          <div>San Jose</div>
+        </button>
+      </div>
+    </section>
+
+    <!-- PAGE 2: TEACHER -->
+    <section id="page-teacher" class="page">
+      <button class="btn back" onclick="goTo('page-campus')">← Back to Campuses</button>
+      <h2>Select Teacher</h2>
+      <div id="teacher-list" class="grid"></div>
+    </section>
+
+    <!-- PAGE 3: QUESTIONS -->
+    <section id="page-questions" class="page">
+      <button class="btn back" onclick="goTo('page-teacher')">← Back to Teachers</button>
+      <h2>Questions for <span id="selected-teacher-name"></span></h2>
+      <form id="questions-form">
+        <div id="questionsContainer"></div>
+        <label for="stars"><b>How likely are you to recommend this teacher?</b></label>
+        <select id="stars" required>
+          <option value="">Select rating</option>
+          <option value="4">⭐⭐⭐⭐</option>
+          <option value="3">⭐⭐⭐</option>
+          <option value="2">⭐⭐</option>
+          <option value="1">⭐</option>
+        </select>
+        <button type="submit" class="btn next">Submit Feedback</button>
+      </form>
+    </section>
+
+    <!-- THANK YOU -->
+    <section id="page-thanks" class="page">
+      <h2>Thank you! 🎉</h2>
+      <p>Your response has been recorded.</p>
+    </section>
+
   </div>
-  <p class="plain-intro">No Names. One Tap. One Emoji for a Thriving Class.</p>
 
-  <!-- Language Switch -->
-  <div class="lang-switch">
-    <label for="langSelect">Language:</label>
-    <select id="langSelect">
-      <option value="en">English</option>
-      <option value="tl">Tagalog</option>
-    </select>
-  </div>
-
-  <!-- Feedback Form -->
-  <form id="feedbackForm">
-    <!-- Campus -->
-    <label for="campusSelect">Campus</label>
-    <div class="form-row">
-      <select id="campusSelect" required onchange="filterTeachers(); updateCampusThumbnail();">
-        <option value="">Select Campus</option>
-        <option value="Main">Main</option>
-        <option value="South">South</option>
-        <option value="San Jose">San Jose</option>
-      </select>
-      <img id="campusThumb" class="campus-thumb" alt="Campus">
-    </div>
-
-    <!-- Teacher -->
-    <label for="teacherSelect">Teacher</label>
-    <div class="form-row">
-      <select id="teacherSelect" required onchange="updateTeacherPhoto()">
-        <option value="">Select Teacher</option>
-      </select>
-      <img id="teacherPhoto" class="teacher-photo" alt="Teacher">
-    </div>
-
-    <!-- THRIVE Questions -->
-    <div id="questionsContainer"></div>
-
-    <!-- Star Rating -->
-    <label for="stars"><b>How likely are you to recommend this teacher?</b></label>
-    <select id="stars" required>
-      <option value="">Select rating</option>
-      <option value="4">⭐⭐⭐⭐</option>
-      <option value="3">⭐⭐⭐</option>
-      <option value="2">⭐⭐</option>
-      <option value="1">⭐</option>
-    </select>
-
-    <button type="submit">Submit</button>
-  </form>
-
-  <!-- Thank You Message -->
-  <div id="thanksMessage">
-    <h3>Thank you! 🎉</h3>
-    <p>Your response has been recorded.</p>
-  </div>
-
-  <!-- Service Worker for PWA -->
   <script src="service-worker.js"></script>
   <script>
-    // Campus icons
-    const campusThumbnails = {
-      "Main":    "icon-192.png",
-      "South":   "icon-192.png",
-      "San Jose":"icon-192.png"
-    };
-
-    // Teachers by campus
+    // DATA
     const teacherMap = {
-      "Main":    ["Reynaldo","Rona","Mar","Mercy","Nelia","Ishtin","Noelyn","Fendie","Sheilou","Robin","Johny"],
-      "South":   ["Jayhard","Edwin","Lyka","Henry"],
-      "San Jose":["Dawn","Cristine","Beverly","Philip","Bryan"]
+      "Main":     ["Reynaldo","Rona","Mar","Mercy","Nelia","Ishtin","Noelyn","Fendie","Sheilou","Robin","Johny"],
+      "South":    ["Jayhard","Edwin","Lyka","Henry"],
+      "San Jose": ["Dawn","Cristine","Beverly","Philip","Bryan"]
     };
-
-    // Teacher photos (direct-drive links)
     const teacherPhotos = {
-      "Reynaldo":"https://drive.google.com/uc?export=view&id=1zX6GMSscSSG_bEFk9Y4LR7x0enz70-gy",
-      "Rona":    "https://drive.google.com/uc?export=view&id=1WhsC12zDdAhjYfy5oI0In4NoduGlDJco",
-      "Mar":     "https://drive.google.com/uc?export=view&id=16zvdiiJVsA_-47mvlMK2GuBgcyDKca_W",
-      "Mercy":   "https://drive.google.com/uc?export=view&id=12inv0_BPy1rGkYQTqnuEwCzetusXe9o7",
-      "Nelia":   "https://drive.google.com/uc?export=view&id=1J6zciu8WEF_4L7kWt_CrnMipUSn-uL-2",
-      "Ishtin":  "https://drive.google.com/uc?export=view&id=1YYO9byASJgqxoLJD5Zcp8gcs9b9GQBOU",
-      "Noelyn":  "https://drive.google.com/uc?export=view&id=1517byREUzKKMQRiBiKQuxnGCMR7S2DOn",
-      "Fendie":  "https://drive.google.com/uc?export=view&id=1pxsvHRRK1nOwLV_ZX3Yl6ZHDl5RR3f8L",
-      "Sheilou": "https://drive.google.com/uc?export=view&id=1bI3T6UmlNAw3To_WcjGJlGPMY2hCjc9J",
-      "Robin":   "https://drive.google.com/uc?export=view&id=1RIiWXPsRYcynFjLmMLbbq14uA7axlv17",
-      "Johny":   "https://drive.google.com/uc?export=view&id=1uYQN16ap8g-OxR0gEMrOsDX1S0KlGnhl",
-      "Jayhard": "https://drive.google.com/uc?export=view&id=1UZ8UJzVreRPC8Mdlo-dT2yPQDVXVOu3W",
-      "Edwin":   "https://drive.google.com/uc?export=view&id=1g7HiWsHOH2a3dAqoEd8dfbuBxsEDLDJK",
-      "Lyka":    "https://drive.google.com/uc?export=view&id=10ZUqbTNQBRtvLFegZylYcpIiDF-U6obn",
-      "Henry":   "https://drive.google.com/uc?export=view&id=13iJnxu7LHa_bVJYrQb3mayBmGj0MGwm_",
-      "Dawn":    "https://drive.google.com/uc?export=view&id=1p_aeeFRrcOOKMruBBcwd2mWVvsz09aIs",
-      "Cristine":"https://drive.google.com/uc?export=view&id=1p_aeeFRrcOOKMruBBcwd2mWVvsz09aIs",
-      "Beverly": "https://drive.google.com/uc?export=view&id=1p_aeeFRrcOOKMruBBcwd2mWVvsz09aIs",
-      "Philip":  "https://drive.google.com/uc?export=view&id=16zfukMacQHAkZn-HUgVoUxRHwlhUevM-",
-      "Bryan":   "https://drive.google.com/uc?export=view&id=17QA4vOtFGO4YmUlmjfQeH5RKwOKvqT6R"
+      "Reynaldo":"https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/Reynaldo.png",
+      "Rona":"https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/Rona.png",
+      "Mar":"https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/Mar.png",
+      "Mercy":"https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/Mercy.png",
+      "Nelia":"https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/Nelia.png",
+      "Ishtin":"https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/Ishtin.png",
+      "Noelyn":"https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/Noelyn.png",
+      "Fendie":"https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/Fendie.png",
+      "Sheilou":"https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/Sheilou.png",
+      "Robin":"https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/Robin.png",
+      "Johny":"https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/Johny.png",
+      "Jayhard":"https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/Jayhard.png",
+      "Edwin":"https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/Edwin.png",
+      "Lyka":"https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/Lyka.png",
+      "Henry":"https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/Henry.png",
+      "Dawn":"https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/Dawn.png",
+      "Cristine":"https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/Cristine.png",
+      "Beverly":"https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/Beverly.png",
+      "Philip":"https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/Philip.png",
+      "Bryan":"https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/Bryan.png"
     };
-
-    // Full THRIVE questions with translations
     const questionInfo = {
-      "T": {
-        meaning: "Teach",
-        en: "I understand the lessons with the help of activities provided by my teacher.",
-        tl: "Naiintindihan ko ang mga aralin sa tulong ng mga gawain na ibinibigay ng aking guro."
-      },
-      "H": {
-        meaning: "Help",
-        en: "I receive guidance from my teacher on how to complete the activities/tasks/modules.",
-        tl: "Nakakatanggap ako ng gabay mula sa aking guro kung paano tapusin ang mga gawain o modules."
-      },
-      "R": {
-        meaning: "Real-life Application", 
-        en: "I can apply what I learned in class to real-life situations.",
-        tl: "Nagagamit ko ang natutunan ko sa klase sa totoong buhay."
-      },
-      "I": {
-        meaning: "Interaction",
-        en: "I was actively involved in class activities because the questions were interesting and challenging.",
-        tl: "Aktibo akong nakilahok sa mga aktibidad sa klase dahil ang mga tanong ng aking guro ay kawili-wili."
-      },
-      "V": {
-        meaning: "Voice",
-        en: "I felt comfortable sharing my ideas and questions.",
-        tl: "Komportable akong ibahagi ang aking mga ideya at tanong."
-      },
-      "E": {
-        meaning: "Encouragement",
-        en: "I received feedback from my teacher that encouraged me to improve.",
-        tl: "Ang puna mula sa aking guro ay nakapagbigay-lakas upang pagbutihin ko ang aking gawa."
-      }
+      "T": { meaning:"Teach",        en:"I understand the lessons with the help of activities provided by my teacher." },
+      "H": { meaning:"Help",         en:"I receive help from my teacher on how to complete the activities/tasks/modules." },
+      "R": { meaning:"Real-life",    en:"I can apply what I learned in class to real-life situations." },
+      "I": { meaning:"Interaction",  en:"I was actively involved in class activities because the questions were interesting and challenging." },
+      "V": { meaning:"Voice",        en:"I felt comfortable sharing my ideas and questions." },
+      "E": { meaning:"Encourage",    en:"I received feedback from my teacher that encouraged me to improve." }
     };
 
-    // Populate and handle interactions
-    function filterTeachers() {
-      const campus = document.getElementById('campusSelect').value;
-      const ts = document.getElementById('teacherSelect');
-      ts.innerHTML = '<option value="">Select Teacher</option>';
-      (teacherMap[campus] || []).forEach(t => {
-        ts.appendChild(new Option(t, t));
+    let selectedCampus, selectedTeacher;
+    function goTo(id){
+      document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+    function chooseCampus(c){
+      selectedCampus=c; showTeachers(); goTo('page-teacher');
+    }
+    function showTeachers(){
+      const grid=document.getElementById('teacher-list');
+      grid.innerHTML='';
+      teacherMap[selectedCampus].forEach(name=>{
+        const btn=document.createElement('button');
+        btn.onclick=()=>{
+          selectedTeacher=name;
+          document.getElementById('selected-teacher-name').textContent=name;
+          buildQuestions(); goTo('page-questions');
+        };
+        const img=document.createElement('img'); img.src=teacherPhotos[name]; img.alt=name;
+        const lbl=document.createElement('div'); lbl.textContent=name;
+        btn.append(img,lbl); grid.appendChild(btn);
       });
-      updateCampusThumbnail();
-      updateTeacherPhoto();
     }
-
-    function updateCampusThumbnail() {
-      const c = document.getElementById('campusSelect').value;
-      const img = document.getElementById('campusThumb');
-      if (campusThumbnails[c]) {
-        img.src = campusThumbnails[c];
-        img.style.display = 'inline-block';
-      } else img.style.display = 'none';
-    }
-
-    function updateTeacherPhoto() {
-      const t = document.getElementById('teacherSelect').value;
-      const img = document.getElementById('teacherPhoto');
-      if (teacherPhotos[t]) {
-        img.src = teacherPhotos[t];
-        img.style.display = 'inline-block';
-      } else img.style.display = 'none';
-    }
-
-    function createQuestions() {
-      const lang = document.getElementById('langSelect').value;
-      const con  = document.getElementById('questionsContainer');
-      con.innerHTML = '';
-      for (let code in questionInfo) {
-        const q = questionInfo[code];
-        con.insertAdjacentHTML('beforeend',
-          `<label><b>${code} (${q.meaning}):</b> ${q[lang]}</label>`
-        );
-        const row = document.createElement('div');
-        row.className = 'emoji-row';
-        ['🔥','👍','😐','👎'].forEach(em => {
-          const btn = document.createElement('button');
-          btn.type = 'button';
-          btn.className = 'emoji-btn';
-          btn.textContent = em;
-          btn.onclick = e => {
+    function buildQuestions(){
+      const cont=document.getElementById('questionsContainer');
+      cont.innerHTML='';
+      Object.entries(questionInfo).forEach(([code,q])=>{
+        cont.insertAdjacentHTML('beforeend',`<label><b>${code} (${q.meaning}):</b> ${q.en}</label>`);
+        const row=document.createElement('div'); row.className='emoji-row';
+        ["🔥","👍","😐","👎"].forEach(em=>{
+          const b=document.createElement('button'); b.type='button'; b.className='emoji-btn'; b.textContent=em;
+          b.onclick=e=>{
             e.preventDefault();
-            row.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            document.getElementById(code).value = em;
+            row.querySelectorAll('.emoji-btn').forEach(x=>x.classList.remove('selected'));
+            b.classList.add('selected');
+            document.getElementById(code).value=em;
           };
-          row.appendChild(btn);
+          row.appendChild(b);
         });
-        con.appendChild(row);
-        const hid = document.createElement('input');
-        hid.type = 'hidden';
-        hid.id   = code;
-        con.appendChild(hid);
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      createQuestions();
-      document.getElementById('langSelect').addEventListener('change', createQuestions);
-      document.getElementById('campusSelect').addEventListener('change', filterTeachers);
-      document.getElementById('teacherSelect').addEventListener('change', updateTeacherPhoto);
-      document.getElementById('feedbackForm').addEventListener('submit', e => {
-        e.preventDefault();
-        // TODO: save data via google.script.run or fetch
-        document.getElementById('feedbackForm').style.display = 'none';
-        document.getElementById('thanksMessage').style.display = 'block';
+        cont.appendChild(row);
+        const inp=document.createElement('input'); inp.type='hidden'; inp.id=code; cont.appendChild(inp);
       });
-    });
-
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js');
     }
+    document.addEventListener('DOMContentLoaded',()=>{
+      document.getElementById('questions-form').onsubmit=e=>{e.preventDefault(); goTo('page-thanks');};
+      if('serviceWorker' in navigator) navigator.serviceWorker.register('service-worker.js');
+    });
   </script>
 </body>
 </html>
