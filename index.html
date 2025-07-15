@@ -4,8 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>iTHRIVE.</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap"
+    rel="stylesheet"
+  />
   <style>
+    /* ==== GLOBAL & LAYOUT ==== */
     body {
       margin: 0;
       background: #f4f6fa;
@@ -16,16 +20,18 @@
       border-left: 6px solid #0d47a1;
       min-height: 100vh;
     }
+
+    /* ==== HEADER (center-aligned) ==== */
     header {
       background: #fff;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       padding: 10px 20px;
       display: flex;
       align-items: center;
-      justify-content: center;
     }
     header img {
       height: 60px;
+      margin-right: 18px;
       cursor: pointer;
     }
     .slogan-container {
@@ -33,33 +39,141 @@
       text-align: center;
     }
     .slogan {
-      font-size: 2rem;
-      font-weight: 700;
       display: flex;
       justify-content: center;
       gap: 0.5em;
+      font-size: 2rem;
+      font-weight: 700;
     }
-    .slogan .iwant { color: #196f38; }
-    .slogan .ican { color: #ffd400; }
+    .slogan .iwant   { color: #196f38; }
+    .slogan .ican    { color: #ffd400; }
     .slogan .ibelong { color: #202c61; }
     .slogan .ithrive { color: #ffd400; }
     .subline {
       margin-top: 4px;
       font-size: 1rem;
       color: #0d47a1;
-      text-align: center;
       font-weight: 600;
+      text-align: center;
     }
+
     .page {
       display: none;
       padding: 20px;
-      max-width: 860px;
+      max-width: 600px;
       margin: 30px auto;
       background: #fff;
       border-radius: 12px;
       box-shadow: 0 2px 12px rgba(0,0,0,0.08);
     }
     .page.active { display: block; }
+    h2, p { text-align: center; color: #444; }
+
+    /* ==== SPLASH ==== */
+    .splash-container { text-align: center; }
+    .splash-container img {
+      width: 100%;
+      border-radius: 8px;
+    }
+    #page-splash button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 15px;
+      font-size: 1.1rem;
+      background: #196f38;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    /* ==== PAGE-CAMPUS ==== */
+    /* “Select Campus” button */
+    #page-campus .campus-header-btn {
+      width: 100%;
+      padding: 15px;
+      font-size: 1.1rem;
+      background: #0d47a1;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+    #page-campus .campus-header-btn:hover {
+      background: #0b3a7b;
+    }
+    /* Branded subline */
+    #page-campus .campus-subline {
+      color: #0d47a1;
+      text-align: center;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+    /* Campus circles */
+    .campus-circles {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+    .campus-thumb {
+      text-align: center;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .campus-thumb.selected {
+      box-shadow: 0 0 0 4px #196f38;
+      transform: scale(1.05);
+    }
+    .campus-thumb img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .campus-thumb span {
+      display: block;
+      margin-top: 10px;
+      font-weight: 600;
+    }
+    /* Emoji grid */
+    .emoji-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .emoji-tile {
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 140px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .emoji-tile:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.12);
+    }
+    .tile-1 { background: #2e67a7; }
+    .tile-2 { background: #ffd400; }
+    .tile-3 { background: #428a33; }
+    .tile-4 { background: #737273; }
+    .emoji { font-size: 160px; line-height: 1; }
+    #page-campus #message {
+      text-align: center;
+      margin-top: 20px;
+      font-weight: 600;
+    }
+
+    /* ==== TEACHER GRID ==== */
     .grid {
       display: flex;
       gap: 18px;
@@ -78,8 +192,10 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
+      transition: transform .1s;
       cursor: pointer;
     }
+    .grid button:hover { transform: scale(1.05); }
     .grid img {
       width: 110px;
       height: 110px;
@@ -92,7 +208,11 @@
       padding: 10px 0 6px;
       font-weight: 600;
       font-size: 1.1rem;
+      margin-top: 10px;
+      box-sizing: border-box;
     }
+
+    /* ==== QUESTIONS & THANK YOU ==== */
     .btn {
       width: 100%;
       padding: 12px;
@@ -100,6 +220,7 @@
       margin: 15px 0;
       border-radius: 8px;
       font-weight: 700;
+      letter-spacing: .03em;
       cursor: pointer;
       border: none;
     }
@@ -108,9 +229,42 @@
       color: #196f38;
       border: 2px solid #196f38;
     }
-    .btn.next {
+    .btn.back:hover {
+      background: #f4f6fa;
+      color: #0d47a1;
+      border: 2px solid #0d47a1;
+    }
+    .btn.next { background: #196f38; color: #fff; }
+    .btn.next:hover { background: #218e49; }
+    .thrive-header {
+      color: #196f38;
+      font-weight: bold;
+      font-size: 1rem;
+      text-align: center;
+      margin-bottom: 12px;
+      letter-spacing: .01em;
+    }
+    .thrive-toggle {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+    .thrive-toggle button {
+      border: none;
+      background: none;
+      font-weight: 700;
+      color: #0d47a1;
+      padding: 6px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background .1s, color .1s;
+    }
+    .thrive-toggle button.selected {
       background: #196f38;
       color: #fff;
+      box-shadow: 0 0 0 1.5px #196f38;
     }
     .emoji-row {
       display: flex;
@@ -126,8 +280,10 @@
       border: none;
       border-radius: 12px;
       cursor: pointer;
+      transition: transform .1s;
     }
-    .emoji-btn.selected {
+    .emoji-btn.selected,
+    .emoji-btn:active {
       background: #ffd400;
       transform: scale(1.1);
     }
@@ -138,57 +294,120 @@
       border-radius: 7px;
       border: 1px solid #bbb;
     }
+
     @media (max-width: 700px) {
-      .grid button {
-        width: 44vw;
-        height: 140px;
-      }
-      .grid img {
-        width: 64px;
-        height: 64px;
-      }
+      .grid button { width: 44vw; height: 140px; }
+      .grid img    { width: 64px;  height: 64px; }
       .slogan { font-size: 1.5rem; }
+      .splash-container img { border-radius: 0; }
     }
-    .thrive-banner {
-      font-weight:700; font-size:1rem; color:#196F38;
-      text-transform:uppercase; margin-bottom: 20px;
-    }
-    .emoji-guide {
-      display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin:20px 0;
-    }
-    .emoji-guide .tile {
-      padding:20px; border-radius:12px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.08);
-    }
-    .emoji-guide .tile .emoji {
-      font-size:48px; line-height:1;
-    }
-    .emoji-guide .tile .emoji-text {
-      margin-top:8px; font-size:0.85rem; line-height:1.2; background:#fff; color:#202c61;
-      padding:4px 8px; border-radius:4px; display:inline-block;
-    }
-    .question-block { margin-bottom: 24px; }
-    .question { font-size:0.95rem; margin-bottom:8px; }
   </style>
 </head>
 <body>
   <div class="layout">
+    <!-- HEADER -->
     <header>
-      <img src="https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/logo.png" alt="CAS Logo" onclick="goTo('page-splash')" />
+      <img
+        src="https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/logo.png"
+        alt="CAS Logo"
+        onclick="goTo('page-splash')"
+      />
+      <div class="slogan-container">
+        <div class="slogan">
+          <span class="iwant">I WANT.</span>
+          <span class="ican">I CAN.</span>
+          <span class="ibelong">I BELONG.</span>
+          <span class="ithrive">I THRIVE.</span>
+        </div>
+        <div class="subline">
+          No Names. One Tap. One Emoji for a Thriving Class.
+        </div>
+      </div>
     </header>
 
+    <!-- SPLASH -->
     <section id="page-splash" class="page active">
-      <button class="btn next" onclick="goTo('page-teacher')">Start</button>
+      <div class="splash-container">
+        <img
+          src="https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/cover.png"
+          alt="Welcome"
+        />
+      </div>
+      <button id="splashBtn">Tap when you're ready.</button>
     </section>
 
+    <!-- CAMPUS PICKER -->
+    <section id="page-campus" class="page">
+      <button
+        class="campus-header-btn"
+        type="button"
+        onclick="scrollToCampus()"
+      >
+        Select Campus
+      </button>
+      <div class="campus-subline">
+        No Names. One Tap. One Emoji for a Thriving Class. I Thrive
+      </div>
+      <div id="campusCircles" class="campus-circles">
+        <div class="campus-thumb" data-campus="Main">
+          <img
+            src="https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/Main.png"
+            alt="Main"
+          />
+          <span>Main</span>
+        </div>
+        <div class="campus-thumb" data-campus="South">
+          <img
+            src="https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/South.png"
+            alt="South"
+          />
+          <span>South</span>
+        </div>
+        <div class="campus-thumb" data-campus="San Jose">
+          <img
+            src="https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/San Jose.png"
+            alt="San Jose"
+          />
+          <span>San Jose</span>
+        </div>
+      </div>
+      <div class="emoji-grid">
+        <div class="emoji-tile tile-1" data-rating="1"><div class="emoji">🔥</div></div>
+        <div class="emoji-tile tile-2" data-rating="2"><div class="emoji">😎</div></div>
+        <div class="emoji-tile tile-3" data-rating="3"><div class="emoji">😐</div></div>
+        <div class="emoji-tile tile-4" data-rating="4"><div class="emoji">🫠</div></div>
+      </div>
+      <div id="message"></div>
+    </section>
+
+    <!-- TEACHER SELECTION -->
     <section id="page-teacher" class="page">
-      <button class="btn back" onclick="goTo('page-splash')">← Back</button>
+      <button class="btn back" onclick="goTo('page-campus')">
+        ← Back to Campuses
+      </button>
       <h2>Select Teacher</h2>
       <div id="teacher-list" class="grid"></div>
     </section>
 
+    <!-- QUESTIONS -->
     <section id="page-questions" class="page">
-      <button class="btn back" onclick="goTo('page-teacher')">← Back to Teachers</button>
-      <h2>Questions for <span id="selected-teacher-name"></span></h2>
+      <button class="btn back" onclick="goTo('page-teacher')">
+        ← Back to Teachers
+      </button>
+      <h2>
+        Questions for <span id="selected-teacher-name"></span>
+      </h2>
+      <div class="thrive-header">
+        Teach. Help. Real-life Application. Interaction. Voice. Encouragement.
+      </div>
+      <div class="thrive-toggle" id="thriveToggle">
+        <button id="thriveTagalog" class="selected" type="button" onclick="setThriveLang('tl')">
+          Tagalog
+        </button>
+        <button id="thriveEnglish" type="button" onclick="setThriveLang('en')">
+          English
+        </button>
+      </div>
       <form id="questions-form">
         <div id="questionsContainer"></div>
         <label for="stars"><b>How likely are you to recommend this teacher?</b></label>
@@ -203,104 +422,116 @@
       </form>
     </section>
 
+    <!-- THANK YOU -->
     <section id="page-thanks" class="page">
-      <header style="justify-content: center;">
-        <img src="https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/logo.png" alt="Logo" />
-      </header>
-      <div class="thrive-banner">TEACH. HELP. REAL-LIFE APPLICATION. INTERACTION. VOICE. ENCOURAGE.</div>
-      <div class="emoji-guide">
-        <div class="tile" style="background:#2E67A7; color:white;"><div class="emoji">🔥</div><div class="emoji-text">Always: Solid!</div></div>
-        <div class="tile" style="background:#FFD400; color:#202c61;"><div class="emoji">😎</div><div class="emoji-text">Often: Chill.</div></div>
-        <div class="tile" style="background:#428A33; color:white;"><div class="emoji">😐</div><div class="emoji-text">Sometimes: Okay.</div></div>
-        <div class="tile" style="background:#737273; color:white;"><div class="emoji">🫠</div><div class="emoji-text">Rarely: Meh.</div></div>
-      </div>
-      <div class="questions-section">
-        <div class="question-block"><div class="question">T: I understand the lesson because of the activities from my teacher.</div></div>
-        <div class="question-block"><div class="question">H: My teacher helps me when I struggle with the tasks.</div></div>
-        <div class="question-block"><div class="question">R: I can apply what I learned in class to real life.</div></div>
-        <div class="question-block"><div class="question">I: I join class activities because the questions are interesting and challenging.</div></div>
-        <div class="question-block"><div class="question">V: I feel comfortable sharing ideas and asking questions in class.</div></div>
-        <div class="question-block"><div class="question">E: I received feedback from my teacher that helped me improve.</div></div>
-      </div>
+      <h2>Thank you! 🎉</h2>
+      <p>Your response has been recorded.</p>
     </section>
   </div>
 
   <script>
-    const translations = {
-      en: {
-        T: "I understand the lessons with the help of activities provided by my teacher.",
-        H: "I receive help from my teacher on how to complete the activities/tasks/modules.",
-        R: "I can apply what I learned in class to real-life situations.",
-        I: "I was actively involved in class activities because the questions were interesting and challenging.",
-        V: "I felt comfortable sharing my ideas and questions.",
-        E: "I received feedback from my teacher that encouraged me to improve."
-      }
-    };
+    // NAV helpers
+    function goTo(id) {
+      document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      if (id==='page-questions') buildQuestions();
+      if (id==='page-teacher') showTeachers();
+    }
+    document.getElementById('splashBtn').onclick = ()=> goTo('page-campus');
+    function scrollToCampus(){
+      const el=document.getElementById('campusCircles');
+      if(el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+
+    // Campus → Teacher
+    document.querySelectorAll('.campus-thumb').forEach(el=>{
+      el.onclick=()=>{
+        document.querySelectorAll('.campus-thumb').forEach(x=>x.classList.remove('selected'));
+        el.classList.add('selected');
+        window.selectedCampus = el.dataset.campus;
+        goTo('page-teacher');
+      };
+    });
+
+    // Teachers list
     const teacherMap = {
-      Main: ["Reynaldo","Rona","Mar","Mercy","Nelia","Ishtin","Noelyn","Fendie","Sheilou","Robin","Johny","Clarence","Eco","Jerome","Joshua","Lalaine","Lovely","Rochel"],
+      Main: ["Reynaldo","Rona","Mar","Mercy","Nelia","Ishtin","Noelyn","Fendie","Sheilou","Robin","Johny","Eco","Jerome","Clarence","Lovely","Lalaine","Fae","Joshua"],
       South: ["Jayhard","Edwin","Lyka","Henry","Elsie"],
       "San Jose": ["Dawn","Cristine","Beverly","Philip","Bryan","Yves"]
     };
     const teacherPhotos = Object.fromEntries(
-      Object.entries(teacherMap).flatMap(([campus, list]) =>
-        list.map(name => [name, `https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/${name}.png`])
+      Object.entries(teacherMap).flatMap(([campus,list])=>
+        list.map(name=>[name,`https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/${name}.png`])
       )
     );
-    let selectedCampus = 'Main';
-    let selectedTeacher = null;
-
-    function goTo(id) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-      if (id === 'page-teacher') showTeachers();
-      if (id === 'page-questions') buildQuestions();
-    }
-
-    function showTeachers() {
-      const grid = document.getElementById('teacher-list');
-      grid.innerHTML = '';
-      teacherMap[selectedCampus].forEach(name => {
-        const btn = document.createElement('button');
-        btn.onclick = () => {
-          selectedTeacher = name;
-          document.getElementById('selected-teacher-name').textContent = name;
+    function showTeachers(){
+      const grid=document.getElementById('teacher-list');
+      grid.innerHTML='';
+      teacherMap[window.selectedCampus].forEach(name=>{
+        const btn=document.createElement('button');
+        btn.onclick=()=>{
+          document.getElementById('selected-teacher-name').textContent=name;
+          window.selectedTeacher=name;
           goTo('page-questions');
         };
-        btn.innerHTML = `<img src="${teacherPhotos[name]}" alt="${name}" /><div>${name}</div>`;
+        btn.innerHTML=`<img src="${teacherPhotos[name]}" alt="${name}"/><div>${name}</div>`;
         grid.appendChild(btn);
       });
     }
 
-    function buildQuestions() {
-      const cont = document.getElementById('questionsContainer');
-      cont.innerHTML = '';
-      ['T','H','R','I','V','E'].forEach(code => {
-        cont.insertAdjacentHTML('beforeend', `<label><b>${code}:</b> ${translations.en[code]}</label>`);
-        const row = document.createElement('div');
-        row.className = 'emoji-row';
-        ['🔥','😎','😐','🫠'].forEach(em => {
-          const b = document.createElement('button');
-          b.type = 'button';
-          b.className = 'emoji-btn';
-          b.textContent = em;
-          b.onclick = () => {
-            row.querySelectorAll('.emoji-btn').forEach(x => x.classList.remove('selected'));
+    // Questions
+    const translations = {
+      en: { T: "I understand the lessons with the help of activities provided by my teacher.",
+            H: "I receive help from my teacher on how to complete the activities/tasks/modules.",
+            R: "I can apply what I learned in class to real-life situations.",
+            I: "I was actively involved in class activities because the questions were interesting and challenging.",
+            V: "I felt comfortable sharing my ideas and questions.",
+            E: "I received feedback from my teacher that encouraged me to improve."
+          },
+      tl: { T: "Naiintindihan ko ang lesson dahil sa mga aktibidad ng aking guro.",
+            H: "Natutulungan ako ng guro ko kapag nahihirapan ako sa mga gawain.",
+            R: "Nagagamit ko sa totoong buhay ang mga natutunan ko sa klase.",
+            I: "Nakikilahok ako sa klase dahil interesting at nakaka-challenge ang mga tanong.",
+            V: "Komportable akong magbahagi ng ideas at magtanong sa klase.",
+            E: "Nakatanggap ako ng feedback mula kay teacher na nagpalakas ng loob ko."
+          }
+    };
+    let thriveLang='tl';
+    function setThriveLang(lang){
+      thriveLang=lang;
+      document.getElementById('thriveTagalog').classList.toggle('selected',lang==='tl');
+      document.getElementById('thriveEnglish').classList.toggle('selected',lang==='en');
+      buildQuestions();
+    }
+    function buildQuestions(){
+      const cont=document.getElementById('questionsContainer');
+      cont.innerHTML='';
+      ['T','H','R','I','V','E'].forEach(code=>{
+        cont.insertAdjacentHTML('beforeend',
+          `<label><b>${code}:</b> ${translations[thriveLang][code]}</label>`);
+        const row=document.createElement('div'); row.className='emoji-row';
+        ['🔥','👍','😐','👎'].forEach(em=>{
+          const b=document.createElement('button');
+          b.type='button'; b.className='emoji-btn'; b.textContent=em;
+          b.onclick=()=>{
+            row.querySelectorAll('.emoji-btn').forEach(x=>x.classList.remove('selected'));
             b.classList.add('selected');
-            document.getElementById(code).value = em;
+            document.getElementById(code).value=em;
           };
           row.appendChild(b);
         });
         cont.appendChild(row);
-        const inp = document.createElement('input');
-        inp.type = 'hidden';
-        inp.id = code;
+        const inp=document.createElement('input');
+        inp.type='hidden'; inp.id=code;
         cont.appendChild(inp);
       });
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('questions-form').onsubmit = e => {
+    // Submit → Thank You
+    document.addEventListener('DOMContentLoaded',()=>{
+      document.getElementById('questions-form').onsubmit=e=>{
         e.preventDefault();
+        // ← hook in Firestore here
         goTo('page-thanks');
       };
     });
