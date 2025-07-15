@@ -42,6 +42,8 @@
       text-decoration: none;
       cursor: default;
     }
+
+    /* ==== HEADER (centered slogan + subline) ==== */
     header {
       background: #fff;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -54,11 +56,15 @@
       margin-right: 18px;
       cursor: pointer;
     }
-    .slogan-container { flex: 1; }
+    .slogan-container {
+      flex: 1;
+      text-align: center;           /* center-align within header */
+    }
     .slogan {
       font-size: 2rem;
       font-weight: 700;
       display: flex;
+      justify-content: center;      /* center the four phrases */
       gap: 0.5em;
     }
     .slogan .iwant   { color: #196f38; }
@@ -68,8 +74,11 @@
     .subline {
       margin-top: 4px;
       font-size: 1rem;
-      color: #444;
+      color: #0d47a1;               /* brand blue */
+      text-align: center;           /* center the subline */
+      font-weight: 600;
     }
+
     .page {
       display: none;
       padding: 20px;
@@ -101,7 +110,31 @@
       cursor: pointer;
     }
 
-    /* ==== CAMPUS PICKER ==== */
+    /* ==== PAGE-CAMPUS ==== */
+    /* “Select Campus” button */
+    #page-campus .campus-header-btn {
+      width: 100%;
+      padding: 15px;
+      font-size: 1.1rem;
+      background: #0d47a1;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+    #page-campus .campus-header-btn:hover {
+      background: #0b3a7b;
+    }
+    /* Branded subline */
+    #page-campus .campus-subline {
+      color: #0d47a1;
+      text-align: center;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+    /* Campus circles */
     .campus-circles {
       display: flex;
       justify-content: center;
@@ -130,6 +163,7 @@
       margin-top: 10px;
       font-weight: 600;
     }
+    /* Emoji grid */
     .emoji-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -177,7 +211,6 @@
       height: 200px;
       border: none;
       border-radius: 18px;
-      overflow: hidden;
       background: #fff;
       box-shadow: 0 0 6px rgba(0,0,0,0.1);
       border-bottom: 5px solid #ffd400;
@@ -194,7 +227,6 @@
       height: 110px;
       margin-top: 20px;
       object-fit: contain;
-      background: #fff;
     }
     .grid div {
       width: 100%;
@@ -314,10 +346,9 @@
 </head>
 <body>
   <div class="layout">
-    <div class="language-toggle" id="languageToggle">
-      <!-- optional language buttons -->
-    </div>
+    <div class="language-toggle" id="languageToggle"></div>
 
+    <!-- HEADER -->
     <header>
       <img
         src="https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/logo.png"
@@ -331,7 +362,7 @@
           <span class="ibelong">I BELONG.</span>
           <span class="ithrive">I THRIVE.</span>
         </div>
-        <div class="subline" id="subline">
+        <div class="subline">
           No Names. One Tap. One Emoji for a Thriving Class.
         </div>
       </div>
@@ -345,16 +376,23 @@
           alt="Welcome"
         />
       </div>
-      <button id="splashBtn" onclick="goTo('page-campus')">
-        Tap when you're ready.
-      </button>
+      <button id="splashBtn">Tap when you're ready.</button>
     </section>
 
     <!-- CAMPUS PICKER -->
     <section id="page-campus" class="page">
-      <button class="btn back" onclick="goTo('page-splash')">← Back</button>
-      <h2>Select Campus & Share Your Vibe</h2>
-      <div class="campus-circles">
+      <!-- New Select Campus button -->
+      <button
+        class="campus-header-btn"
+        type="button"
+        onclick="scrollToCampus()"
+      >
+        Select Campus
+      </button>
+      <div class="campus-subline">
+        No Names. One Tap. One Emoji for a Thriving Class. I Thrive
+      </div>
+      <div id="campusCircles" class="campus-circles">
         <div class="campus-thumb" data-campus="Main">
           <img
             src="https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/Main.png"
@@ -391,7 +429,7 @@
       <button class="btn back" onclick="goTo('page-campus')">
         ← Back to Campuses
       </button>
-      <h2 id="teacherTitle">Select Teacher</h2>
+      <h2>Select Teacher</h2>
       <div id="teacher-list" class="grid"></div>
     </section>
 
@@ -400,17 +438,17 @@
       <button class="btn back" onclick="goTo('page-teacher')">
         ← Back to Teachers
       </button>
-      <h2 id="questionsFor">
+      <h2>
         Questions for <span id="selected-teacher-name"></span>
       </h2>
       <div class="thrive-header">
         Teach. Help. Real-life Application. Interaction. Voice. Encouragement.
       </div>
       <div class="thrive-toggle" id="thriveToggle">
-        <button id="thriveTagalog" class="selected" onclick="setThriveLang('tl')">
+        <button id="thriveTagalog" class="selected" type="button" onclick="setThriveLang('tl')">
           Tagalog
         </button>
-        <button id="thriveEnglish" onclick="setThriveLang('en')">
+        <button id="thriveEnglish" type="button" onclick="setThriveLang('en')">
           English
         </button>
       </div>
@@ -436,7 +474,7 @@
   </div>
 
   <script>
-    // TRANSLATIONS & TEACHER DATA
+    // APP DATA & STATE
     const translations = {
       en: {
         T: "I understand the lessons with the help of activities provided by my teacher.",
@@ -456,16 +494,15 @@
       }
     };
     const teacherMap = {
-      "Main": ["Reynaldo","Rona","Mar","Mercy","Nelia","Ishtin","Noelyn","Fendie","Sheilou","Robin","Johny"],
-      "South": ["Jayhard","Edwin","Lyka","Henry"],
+      Main: ["Reynaldo","Rona","Mar","Mercy","Nelia","Ishtin","Noelyn","Fendie","Sheilou","Robin","Johny"],
+      South: ["Jayhard","Edwin","Lyka","Henry"],
       "San Jose": ["Dawn","Cristine","Beverly","Philip","Bryan"]
     };
     const teacherPhotos = Object.fromEntries(
-      Object.entries(teacherMap)
-        .flatMap(([campus, list]) => list.map(name => [name, `https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/${name}.png`]))
+      Object.entries(teacherMap).flatMap(([campus, list]) =>
+        list.map(name => [name, `https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/${name}.png`])
+      )
     );
-
-    // APP STATE
     let thriveLang = 'tl';
     let selectedCampus = null;
     let selectedTeacher = null;
@@ -477,22 +514,18 @@
       if (id === 'page-questions') buildQuestions();
       if (id === 'page-teacher') showTeachers();
     }
-
-    // SPLASH → CAMPUS
     document.getElementById('splashBtn').onclick = () => goTo('page-campus');
 
-    // LANGUAGE TOGGLE (questions only)
-    function setThriveLang(lang) {
-      thriveLang = lang;
-      document.getElementById('thriveTagalog').classList.toggle('selected', lang==='tl');
-      document.getElementById('thriveEnglish').classList.toggle('selected', lang==='en');
-      buildQuestions();
+    // SCROLL TO CAMPUS
+    function scrollToCampus() {
+      const el = document.getElementById('campusCircles');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     // CAMPUS SELECTION
     document.querySelectorAll('.campus-thumb').forEach(el => {
       el.onclick = () => {
-        document.querySelectorAll('.campus-thumb').forEach(x=>x.classList.remove('selected'));
+        document.querySelectorAll('.campus-thumb').forEach(x => x.classList.remove('selected'));
         el.classList.add('selected');
         selectedCampus = el.dataset.campus;
         goTo('page-teacher');
@@ -507,7 +540,7 @@
         const btn = document.createElement('button');
         btn.onclick = () => {
           selectedTeacher = name;
-          document.getElementById('selected-teacher-name').textContent = name;
+          document.getElementById('selected-teasurer-name').textContent = name;
           goTo('page-questions');
         };
         btn.innerHTML = `<img src="${teacherPhotos[name]}" alt="${name}" /><div>${name}</div>`;
@@ -517,10 +550,10 @@
 
     // BUILD QUESTIONS
     function buildQuestions() {
-      const c = document.getElementById('questionsContainer');
-      c.innerHTML = '';
+      const cont = document.getElementById('questionsContainer');
+      cont.innerHTML = '';
       ['T','H','R','I','V','E'].forEach(code => {
-        c.insertAdjacentHTML('beforeend',
+        cont.insertAdjacentHTML('beforeend',
           `<label><b>${code}:</b> ${translations[thriveLang][code]}</label>`);
         const row = document.createElement('div');
         row.className = 'emoji-row';
@@ -536,19 +569,19 @@
           };
           row.appendChild(b);
         });
-        c.appendChild(row);
+        cont.appendChild(row);
         const inp = document.createElement('input');
         inp.type = 'hidden';
         inp.id = code;
-        c.appendChild(inp);
+        cont.appendChild(inp);
       });
     }
 
-    // FINAL SUBMIT (currently just navigates to Thank You)
+    // FORM SUBMIT
     document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('questions-form').onsubmit = e => {
         e.preventDefault();
-        // → Here you’d add your save-to-Firestore logic
+        // ← add your Firestore save logic here
         goTo('page-thanks');
       };
     });
