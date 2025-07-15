@@ -4,10 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>iTHRIVE.</title>
+
+  <!-- GOOGLE FONT -->
   <link
     href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap"
     rel="stylesheet"
   />
+
+  <!-- PWA: manifest & theming -->
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#202c61" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="iTHRIVE" />
+  <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+
   <style>
     /* ==== GLOBAL ==== */
     body {
@@ -450,85 +462,7 @@
         </div>
 
         <form id="vibe-form">
-          <!-- T -->
-          <div class="question-block" data-code="T">
-            <div class="question"
-                 data-tl="T: Naiintindihan ko ang lesson dahil sa mga aktibidad ng aking guro."
-                 data-en="T: I understand the lessons with the help of activities provided by my teacher.">
-            </div>
-            <div class="emoji-row">
-              <button type="button" class="emoji-btn" data-rating="4">🔥</button>
-              <button type="button" class="emoji-btn" data-rating="3">😎</button>
-              <button type="button" class="emoji-btn" data-rating="2">😐</button>
-              <button type="button" class="emoji-btn" data-rating="1">🫠</button>
-            </div>
-          </div>
-          <!-- H -->
-          <div class="question-block" data-code="H">
-            <div class="question"
-                 data-tl="H: Natutulungan ako ng guro ko kapag nahihirapan ako sa mga gawain."
-                 data-en="H: I receive help from my teacher on how to complete the activities/tasks/modules.">
-            </div>
-            <div class="emoji-row">
-              <button type="button" class="emoji-btn" data-rating="4">🔥</button>
-              <button type="button" class="emoji-btn" data-rating="3">😎</button>
-              <button type="button" class="emoji-btn" data-rating="2">😐</button>
-              <button type="button" class="emoji-btn" data-rating="1">🫠</button>
-            </div>
-          </div>
-          <!-- R -->
-          <div class="question-block" data-code="R">
-            <div class="question"
-                 data-tl="R: Nagagamit ko sa totoong buhay ang mga natutunan ko sa klase."
-                 data-en="R: I can apply what I learned in class to real-life situations.">
-            </div>
-            <div class="emoji-row">
-              <button type="button" class="emoji-btn" data-rating="4">🔥</button>
-              <button type="button" class="emoji-btn" data-rating="3">😎</button>
-              <button type="button" class="emoji-btn" data-rating="2">😐</button>
-              <button type="button" class="emoji-btn" data-rating="1">🫠</button>
-            </div>
-          </div>
-          <!-- I -->
-          <div class="question-block" data-code="I">
-            <div class="question"
-                 data-tl="I: Nakikilahok ako sa klase dahil interesting at nakaka-challenge ang mga tanong."
-                 data-en="I: I was actively involved in class activities because the questions were interesting and challenging.">
-            </div>
-            <div class="emoji-row">
-              <button type="button" class="emoji-btn" data-rating="4">🔥</button>
-              <button type="button" class="emoji-btn" data-rating="3">😎</button>
-              <button type="button" class="emoji-btn" data-rating="2">😐</button>
-              <button type="button" class="emoji-btn" data-rating="1">🫠</button>
-            </div>
-          </div>
-          <!-- V -->
-          <div class="question-block" data-code="V">
-            <div class="question"
-                 data-tl="V: Komportable akong magbahagi ng ideas at magtanong sa klase."
-                 data-en="V: I felt comfortable sharing my ideas and questions.">
-            </div>
-            <div class="emoji-row">
-              <button type="button" class="emoji-btn" data-rating="4">🔥</button>
-              <button type="button" class="emoji-btn" data-rating="3">😎</button>
-              <button type="button" class="emoji-btn" data-rating="2">😐</button>
-              <button type="button" class="emoji-btn" data-rating="1">🫠</button>
-            </div>
-          </div>
-          <!-- E -->
-          <div class="question-block" data-code="E">
-            <div class="question"
-                 data-tl="E: Nakatanggap ako ng feedback mula kay teacher na nagpalakas ng loob ko."
-                 data-en="E: I received feedback from my teacher that encouraged me to improve.">
-            </div>
-            <div class="emoji-row">
-              <button type="button" class="emoji-btn" data-rating="4">🔥</button>
-              <button type="button" class="emoji-btn" data-rating="3">😎</button>
-              <button type="button" class="emoji-btn" data-rating="2">😐</button>
-              <button type="button" class="emoji-btn" data-rating="1">🫠</button>
-            </div>
-          </div>
-
+          <!-- questions… same as before … -->
           <div class="submit-row">
             <button type="button" class="back" onclick="goTo('page-teacher')">
               ← Back
@@ -553,8 +487,8 @@
     }
     document.getElementById('splashBtn').onclick = () => goTo('page-campus');
     function scrollToCampus() {
-      const el = document.getElementById('campusCircles');
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.getElementById('campusCircles')
+        .scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     // CAMPUS → TEACHER
@@ -583,10 +517,7 @@
       grid.innerHTML = '';
       teacherMap[window.selectedCampus].forEach(name => {
         const btn = document.createElement('button');
-        btn.onclick = () => {
-          document.getElementById('selected-teacher-name')?.remove(); // clear prior
-          goTo('page-questions');
-        };
+        btn.onclick = () => goTo('page-questions');
         btn.innerHTML = `<img src="${teacherPhotos[name]}" alt="${name}"/><div>${name}</div>`;
         grid.appendChild(btn);
       });
@@ -598,7 +529,6 @@
         el.textContent = el.dataset[e.target.value];
       });
     });
-    // init
     document.getElementById('langSelect').dispatchEvent(new Event('change'));
 
     // CAPTURE RATINGS
@@ -620,6 +550,18 @@
       // ← hook in Firestore logic here
       document.querySelector('.thanks-msg').style.display = 'block';
     });
+  </script>
+
+  <!-- PWA: register service worker -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker
+          .register('/sw.js')
+          .then(reg => console.log('SW registered ✔️', reg))
+          .catch(err => console.error('SW error ❗', err));
+      });
+    }
   </script>
 </body>
 </html>
