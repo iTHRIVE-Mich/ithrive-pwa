@@ -1,15 +1,23 @@
 {
   "name": "iTHRIVE",
   "short_name": "iTHRIVE",
-  "start_url": ".",
+  "description": "No Names. One Tap. One Emoji for a Thriving Class.",
+  "start_url": "/?utm_source=web_app_manifest",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#0a539c",
+  "orientation": "portrait",
+  "background_color": "#f4f6fa",
+  "theme_color": "#202c61",
   "icons": [
     {
-      "src": "icon-192.png",
-      "type": "image/png",
-      "sizes": "192x192"
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
   ]
 }
