@@ -22,10 +22,10 @@
       padding: 10px 20px;
       display: flex;
       align-items: center;
+      justify-content: center;
     }
     header img {
       height: 60px;
-      margin-right: 18px;
       cursor: pointer;
     }
     .slogan-container {
@@ -53,7 +53,7 @@
     .page {
       display: none;
       padding: 20px;
-      max-width: 600px;
+      max-width: 860px;
       margin: 30px auto;
       background: #fff;
       border-radius: 12px;
@@ -149,21 +149,31 @@
       }
       .slogan { font-size: 1.5rem; }
     }
+    .thrive-banner {
+      font-weight:700; font-size:1rem; color:#196F38;
+      text-transform:uppercase; margin-bottom: 20px;
+    }
+    .emoji-guide {
+      display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin:20px 0;
+    }
+    .emoji-guide .tile {
+      padding:20px; border-radius:12px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.08);
+    }
+    .emoji-guide .tile .emoji {
+      font-size:48px; line-height:1;
+    }
+    .emoji-guide .tile .emoji-text {
+      margin-top:8px; font-size:0.85rem; line-height:1.2; background:#fff; color:#202c61;
+      padding:4px 8px; border-radius:4px; display:inline-block;
+    }
+    .question-block { margin-bottom: 24px; }
+    .question { font-size:0.95rem; margin-bottom:8px; }
   </style>
 </head>
 <body>
   <div class="layout">
     <header>
       <img src="https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/logo.png" alt="CAS Logo" onclick="goTo('page-splash')" />
-      <div class="slogan-container">
-        <div class="slogan">
-          <span class="iwant">I WANT.</span>
-          <span class="ican">I CAN.</span>
-          <span class="ibelong">I BELONG.</span>
-          <span class="ithrive">I THRIVE.</span>
-        </div>
-        <div class="subline">No Names. One Tap. One Emoji for a Thriving Class.</div>
-      </div>
     </header>
 
     <section id="page-splash" class="page active">
@@ -194,8 +204,24 @@
     </section>
 
     <section id="page-thanks" class="page">
-      <h2>Thank you! 🎉</h2>
-      <p>Your response has been recorded.</p>
+      <header style="justify-content: center;">
+        <img src="https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/logo.png" alt="Logo" />
+      </header>
+      <div class="thrive-banner">TEACH. HELP. REAL-LIFE APPLICATION. INTERACTION. VOICE. ENCOURAGE.</div>
+      <div class="emoji-guide">
+        <div class="tile" style="background:#2E67A7; color:white;"><div class="emoji">🔥</div><div class="emoji-text">Always: Solid!</div></div>
+        <div class="tile" style="background:#FFD400; color:#202c61;"><div class="emoji">😎</div><div class="emoji-text">Often: Chill.</div></div>
+        <div class="tile" style="background:#428A33; color:white;"><div class="emoji">😐</div><div class="emoji-text">Sometimes: Okay.</div></div>
+        <div class="tile" style="background:#737273; color:white;"><div class="emoji">🫠</div><div class="emoji-text">Rarely: Meh.</div></div>
+      </div>
+      <div class="questions-section">
+        <div class="question-block"><div class="question">T: I understand the lesson because of the activities from my teacher.</div></div>
+        <div class="question-block"><div class="question">H: My teacher helps me when I struggle with the tasks.</div></div>
+        <div class="question-block"><div class="question">R: I can apply what I learned in class to real life.</div></div>
+        <div class="question-block"><div class="question">I: I join class activities because the questions are interesting and challenging.</div></div>
+        <div class="question-block"><div class="question">V: I feel comfortable sharing ideas and asking questions in class.</div></div>
+        <div class="question-block"><div class="question">E: I received feedback from my teacher that helped me improve.</div></div>
+      </div>
     </section>
   </div>
 
@@ -220,7 +246,7 @@
         list.map(name => [name, `https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/${name}.png`])
       )
     );
-    let selectedCampus = 'Main'; // set a default
+    let selectedCampus = 'Main';
     let selectedTeacher = null;
 
     function goTo(id) {
@@ -252,7 +278,7 @@
         cont.insertAdjacentHTML('beforeend', `<label><b>${code}:</b> ${translations.en[code]}</label>`);
         const row = document.createElement('div');
         row.className = 'emoji-row';
-        ['🔥','👍','😐','👎'].forEach(em => {
+        ['🔥','😎','😐','🫠'].forEach(em => {
           const b = document.createElement('button');
           b.type = 'button';
           b.className = 'emoji-btn';
@@ -275,7 +301,6 @@
     document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('questions-form').onsubmit = e => {
         e.preventDefault();
-        // Firestore or DB logic goes here
         goTo('page-thanks');
       };
     });
