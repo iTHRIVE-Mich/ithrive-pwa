@@ -383,16 +383,16 @@
     <!-- TEACHER SELECTION -->
     <section id="page-teacher" class="page">
       <button class="btn back" onclick="goTo('page-campus')">
-        ← Back to Campuses
+        ← Back
       </button>
-      <h2>Select Teacher</h2>
+      <h2>Ready. Set. Check Vibe.</h2>
       <div id="teacher-list" class="grid"></div>
     </section>
 
     <!-- QUESTIONS -->
     <section id="page-questions" class="page">
       <button class="btn back" onclick="goTo('page-teacher')">
-        ← Back to Teachers
+        ← Back
       </button>
       <h2>
         Questions for <span id="selected-teacher-name"></span>
@@ -425,7 +425,7 @@
     <!-- THANK YOU -->
     <section id="page-thanks" class="page">
       <h2>Thank you! 🎉</h2>
-      <p>Your response has been recorded.</p>
+      <p>    You’re helping your teacher help you thrive. Salamat! 🌱💚.</p>
     </section>
   </div>
 
@@ -479,62 +479,216 @@
       });
     }
 
-    // Questions
-    const translations = {
-      en: { T: "I understand the lessons with the help of activities provided by my teacher.",
-            H: "I receive help from my teacher on how to complete the activities/tasks/modules.",
-            R: "I can apply what I learned in class to real-life situations.",
-            I: "I was actively involved in class activities because the questions were interesting and challenging.",
-            V: "I felt comfortable sharing my ideas and questions.",
-            E: "I received feedback from my teacher that encouraged me to improve."
-          },
-      tl: { T: "Naiintindihan ko ang lesson dahil sa mga aktibidad ng aking guro.",
-            H: "Natutulungan ako ng guro ko kapag nahihirapan ako sa mga gawain.",
-            R: "Nagagamit ko sa totoong buhay ang mga natutunan ko sa klase.",
-            I: "Nakikilahok ako sa klase dahil interesting at nakaka-challenge ang mga tanong.",
-            V: "Komportable akong magbahagi ng ideas at magtanong sa klase.",
-            E: "Nakatanggap ako ng feedback mula kay teacher na nagpalakas ng loob ko."
-          }
-    };
-    let thriveLang='tl';
-    function setThriveLang(lang){
-      thriveLang=lang;
-      document.getElementById('thriveTagalog').classList.toggle('selected',lang==='tl');
-      document.getElementById('thriveEnglish').classList.toggle('selected',lang==='en');
-      buildQuestions();
+
+  <title>Screen 4 – Vibe Check Questions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    body { margin:0; font-family:'Montserrat',sans-serif; background:#f4f6fa; color:#202c61; }
+    header { display:flex; align-items:center; padding:12px 16px; background:#fff; box-shadow:0 2px 5px rgba(0,0,0,0.05); }
+    header img { height:50px; margin-right:16px; cursor:pointer; }
+    .slogan-container { flex:1; }
+    .slogan { font-size:1.6rem; font-weight:700; display:flex; gap:0.5em; align-items:center; }
+    .slogan .iwant { color:#196F38; }
+    .slogan .ican { color:#FFD400; }
+    .slogan .ibelong { color:#202C61; }
+    .slogan .ithrive { color:#FFD700; }
+    .subline { margin-top:4px; font-size:1rem; color:#202c61; }
+    .container { max-width:860px; margin:0 auto; padding:20px; }
+    .top-row {
+      display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:16px; flex-wrap:nowrap;
     }
-    function buildQuestions(){
-      const cont=document.getElementById('questionsContainer');
-      cont.innerHTML='';
-      ['T','H','R','I','V','E'].forEach(code=>{
-        cont.insertAdjacentHTML('beforeend',
-          `<label><b>${code}:</b> ${translations[thriveLang][code]}</label>`);
-        const row=document.createElement('div'); row.className='emoji-row';
-        ['🔥','👍','😐','👎'].forEach(em=>{
-          const b=document.createElement('button');
-          b.type='button'; b.className='emoji-btn'; b.textContent=em;
-          b.onclick=()=>{
-            row.querySelectorAll('.emoji-btn').forEach(x=>x.classList.remove('selected'));
-            b.classList.add('selected');
-            document.getElementById(code).value=em;
-          };
-          row.appendChild(b);
-        });
-        cont.appendChild(row);
-        const inp=document.createElement('input');
-        inp.type='hidden'; inp.id=code;
-        cont.appendChild(inp);
+    .thrive-banner { font-weight:700; font-size:1rem; color:#196F38; text-transform:uppercase; white-space:nowrap; }
+    .lang-toggle select {
+      padding:6px 8px; font-size:1.1rem; border-radius:8px; border:1.5px solid #ccc; background:#fff; cursor:pointer;
+    }
+    .emoji-guide {
+      display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin:20px 0;
+    }
+    .emoji-guide .tile {
+      padding:20px; border-radius:12px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.08);
+    }
+    .emoji-guide .tile .emoji {
+      font-size:48px; line-height:1;
+    }
+    .emoji-guide .tile .emoji-text {
+      margin-top:8px; font-size:0.85rem; line-height:1.2; background:#fff; color:#202c61;
+      padding:4px 8px; border-radius:4px; display:inline-block;
+    }
+    .questions-section .question-block {
+      margin-bottom: 24px;
+    }
+    .questions-section .question {
+      font-size:0.95rem; margin-bottom:8px;
+    }
+    .questions-section .emoji-row {
+      display:flex; justify-content:space-around; margin-bottom:0;
+    }
+    .emoji-btn { font-size:36px; background:none; border:none; cursor:pointer; }
+    .emoji-btn.selected { transform:scale(1.2); }
+    .submit-row {
+      display:flex; justify-content:space-between; align-items:center; margin-top:20px; gap:10px;
+    }
+    .submit-row button {
+      flex:1; padding:10px; font-size:1rem; font-weight:600; border-radius:10px; cursor:pointer; text-align:center;
+    }
+    .submit-row .back { background:#fff; color:#202c61; border:2px solid #202c61; }
+    .submit-row .submit { background:#196F38; color:#fff; border:none; }
+    .thanks-msg { display:none; margin-top:30px; font-size:1.05rem; font-weight:600; color:#196F38; text-align:center; }
+    @media(max-width:600px){
+      .emoji-guide { grid-template-columns:1fr; }
+      .thrive-banner { font-size:0.85rem; }
+      .submit-row { flex-direction:column; }
+      .submit-row button { width:100%; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/logo.png"
+         onclick="window.location.href='index.html'" alt="Logo">
+    <div class="slogan-container">
+      <div class="slogan">
+        <span class="iwant">I WANT.</span>
+        <span class="ican">I CAN.</span>
+        <span class="ibelong">I BELONG.</span>
+        <span class="ithrive">I THRIVE.</span>
+      </div>
+      <div class="subline">No Names. One Tap. One Emoji for a Thriving Class.</div>
+    </div>
+  </header>
+  <div class="container">
+    <div class="top-row">
+      <div class="thrive-banner">
+        TEACH. HELP. REAL-LIFE APPLICATION. INTERACTION. VOICE. ENCOURAGEMENT.
+      </div>
+      <div class="lang-toggle">
+        <select id="langSelect" onchange="changeLang(this.value)">
+          <option value="tl">Tagalog</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="emoji-guide">
+      <div class="tile" style="background:#2E67A7; color:white;">
+        <div class="emoji">🔥</div>
+        <div class="emoji-text">Always: Solid!</div>
+      </div>
+      <div class="tile" style="background:#FFD400; color:#202c61;">
+        <div class="emoji">😎</div>
+        <div class="emoji-text">Often: Chill.</div>
+      </div>
+      <div class="tile" style="background:#428A33; color:white;">
+        <div class="emoji">😐</div>
+        <div class="emoji-text">Sometimes: Okay.</div>
+      </div>
+      <div class="tile" style="background:#737273; color:white;">
+        <div class="emoji">🫠</div>
+        <div class="emoji-text">Rarely: Meh.</div>
+      </div>
+    </div>
+
+    <div class="questions-section">
+      <!-- T -->
+      <div class="question-block">
+        <div class="question"
+             data-tl="T: Naiintindihan ko ang lesson dahil sa mga aktibidad ng aking guro."
+             data-en="T: I understand the lessons with the help of activities provided by my teacher.">
+        </div>
+        <div class="emoji-row">
+          <button class="emoji-btn">🔥</button>
+          <button class="emoji-btn">😎</button>
+          <button class="emoji-btn">😐</button>
+          <button class="emoji-btn">🫠</button>
+        </div>
+      </div>
+      <!-- H -->
+      <div class="question-block">
+        <div class="question"
+             data-tl="H: Natutulungan ako ng guro ko kapag nahihirapan ako sa mga gawain."
+             data-en="H: I receive help from my teacher on how to complete the activities/tasks/modules.">
+        </div>
+        <div class="emoji-row">
+          <button class="emoji-btn">🔥</button>
+          <button class="emoji-btn">😎</button>
+          <button class="emoji-btn">😐</button>
+          <button class="emoji-btn">🫠</button>
+        </div>
+      </div>
+      <!-- R -->
+      <div class="question-block">
+        <div class="question"
+             data-tl="R: Nagagamit ko sa totoong buhay ang mga natutunan ko sa klase."
+             data-en="R: I can apply what I learned in class to real-life situations.">
+        </div>
+        <div class="emoji-row">
+          <button class="emoji-btn">🔥</button>
+          <button class="emoji-btn">😎</button>
+          <button class="emoji-btn">😐</button>
+          <button class="emoji-btn">🫠</button>
+        </div>
+      </div>
+      <!-- I -->
+      <div class="question-block">
+        <div class="question"
+             data-tl="I: Nakikilahok ako sa klase dahil interesting at nakaka-challenge ang mga tanong."
+             data-en="I: I was actively involved in class activities because the questions were interesting and challenging.">
+        </div>
+        <div class="emoji-row">
+          <button class="emoji-btn">🔥</button>
+          <button class="emoji-btn">😎</button>
+          <button class="emoji-btn">😐</button>
+          <button class="emoji-btn">🫠</button>
+        </div>
+      </div>
+      <!-- V -->
+      <div class="question-block">
+        <div class="question"
+             data-tl="V: Komportable akong magbahagi ng ideas at magtanong sa klase."
+             data-en="V: I felt comfortable sharing my ideas and questions.">
+        </div>
+        <div class="emoji-row">
+          <button class="emoji-btn">🔥</button>
+          <button class="emoji-btn">😎</button>
+          <button class="emoji-btn">😐</button>
+          <button class="emoji-btn">🫠</button>
+        </div>
+      </div>
+      <!-- E -->
+      <div class="question-block">
+        <div class="question"
+             data-tl="E: Nakatanggap ako ng feedback mula kay teacher na nagpalakas ng loob ko."
+             data-en="E: I received feedback from my teacher that encouraged me to improve.">
+        </div>
+        <div class="emoji-row">
+          <button class="emoji-btn">🔥</button>
+          <button class="emoji-btn">😎</button>
+          <button class="emoji-btn">😐</button>
+          <button class="emoji-btn">🫠</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="submit-row">
+      <button class="back" onclick="window.history.back()">← Back</button>
+      <button class="submit" onclick="document.querySelector('.thanks-msg').style.display='block'">
+        Submit ➡️
+      </button>
+    </div>
+
+    <div class="thanks-msg">
+      You’re helping your teacher help you thrive. Salamat! 🌱💚
+    </div>
+  </div>
+
+  <script>
+    function changeLang(lang) {
+      document.querySelectorAll('.question').forEach(el => {
+        el.textContent = el.dataset[lang];
       });
     }
-
-    // Submit → Thank You
-    document.addEventListener('DOMContentLoaded',()=>{
-      document.getElementById('questions-form').onsubmit=e=>{
-        e.preventDefault();
-        // ← hook in Firestore here
-        goTo('page-thanks');
-      };
-    });
+    // Initialize language
+    changeLang('tl');
   </script>
 </body>
 </html>
