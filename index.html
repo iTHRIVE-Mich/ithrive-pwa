@@ -74,18 +74,11 @@
       document.getElementById('campusCircles')
               .scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+  </div>  <!-- end of .layout -->
 
-    // 2) Show teachers for selected campus
-    const teacherMap = {
-      Main: ["Reynaldo","Rona", /* … */ "Eco"],
-      South: ["Jayhard","Edwin","Lyka","Henry","Elsie"],
-      "San Jose": ["Dawn","Cristine","Beverly","Philip","Bryan","Yves"]
-    };
-    const teacherPhotos = Object.fromEntries(
-      Object.entries(teacherMap).flatMap(([campus,list]) =>
-        list.map(name => [name, `https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/${name}.png`])
-      )
-    );
+  <!-- ────────── APP LOGIC ────────── -->
+  <script>
+    // 1) Show teachers
     function showTeachers() {
       const grid = document.getElementById('teacher-list');
       grid.innerHTML = '';
@@ -99,14 +92,14 @@
     document.querySelectorAll('.campus-thumb').forEach(el => {
       el.onclick = () => {
         document.querySelectorAll('.campus-thumb')
-                .forEach(x => x.classList.remove('selected'));
+          .forEach(x => x.classList.remove('selected'));
         el.classList.add('selected');
         window.selectedCampus = el.dataset.campus;
         goTo('page-teacher');
       };
     });
 
-    // 3) Language toggle
+    // 2) Language toggle
     document.getElementById('langSelect').addEventListener('change', e => {
       document.querySelectorAll('.question').forEach(el => {
         el.textContent = el.dataset[e.target.value];
@@ -114,7 +107,7 @@
     });
     document.getElementById('langSelect').dispatchEvent(new Event('change'));
 
-    // 4) Capture THRIVE emoji ratings
+    // 3) Capture THRIVE ratings
     const answers = {};
     document.querySelectorAll('.emoji-row').forEach(row => {
       row.addEventListener('click', e => {
@@ -126,7 +119,7 @@
       });
     });
 
-    // 5) Submit handler & save to Firestore
+    // 4) Submit handler & save to Firestore
     async function saveVibeCheck() {
       const user = firebase.auth().currentUser;
       if (!user) {
@@ -160,6 +153,7 @@
       document.querySelector('.thanks-msg').style.display = 'block';
     });
   </script>
+  <!-- ────────────────────────────────── -->
 
   <!-- ─── FIREBASE COMPAT SDKs & INIT ─── -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -186,5 +180,8 @@
     });
   </script>
   <!-- ──────────────────────────────────────── -->
+
 </body>
 </html>
+
+  
