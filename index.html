@@ -503,6 +503,34 @@
   const app = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
 </script>
-
+  <!-- ── FIREBASE SETUP ── -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script>
+    // 1) Paste your config from the console here:
+    const firebaseConfig = {
+      apiKey:    "YOUR_API_KEY",
+      authDomain:"YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId:     "YOUR_APP_ID"
+    };
+    // 2) Initialize Firebase:
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    // 3) Sign in anonymously (behind the scenes):
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) {
+        firebase.auth().signInAnonymously().catch(console.error);
+      } else {
+        console.log('Signed in as', user.uid);
+      }
+    });
+  </script>
+  <!-- ────────────────────── -->
+</body>
+</html>
 </body>
 </html>
