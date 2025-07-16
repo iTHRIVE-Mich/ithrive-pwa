@@ -393,8 +393,33 @@
     </section>
 
   </div>
-
-  <script>
+<script>
+  async function saveVibeCheck() {
+    const user = firebase.auth().currentUser;
+    if (!user) {
+      alert('Still signing you in—please wait a moment and try again.');
+      return;
+    }
+    // Build the payload
+    const payload = {
+      uid:       user.uid,
+      campus:    window.selectedCampus,
+      teacher:   window.selectedTeacher,
+      language:  document.getElementById('langSelect').value,
+      recommend: parseInt(document.getElementById('stars').value, 10),
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      ...answers  // your T/H/R/I/V/E ratings
+    };
+    try {
+      const docRef = await db.collection('vibeChecks').add(payload);
+      console.log('Saved vibe check:', docRef.id, payload);
+    } catch (err) {
+      console.error('Error saving vibe check:', err);
+      alert('Couldn’t record your feedback—please try again.');
+    }
+  }
+</script>
+  
     // NAV & RESET
     function goTo(id) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
