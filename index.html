@@ -74,112 +74,128 @@
       document.getElementById('campusCircles')
               .scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  </div>  <!-- end of .layout -->
+</div>  <!-- end of .layout -->
 
-  <!-- ────────── APP LOGIC ────────── -->
-  <script>
-    // 1) Show teachers
-    function showTeachers() {
-      const grid = document.getElementById('teacher-list');
-      grid.innerHTML = '';
-      teacherMap[window.selectedCampus].forEach(name => {
-        const btn = document.createElement('button');
-        btn.onclick = () => goTo('page-questions');
-        btn.innerHTML = `<img src="${teacherPhotos[name]}" alt="${name}"/><div>${name}</div>`;
-        grid.appendChild(btn);
-      });
+<!-- ────────── APP LOGIC ────────── -->
+<script>
+  // 1) Navigate between pages
+  function goTo(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    if (id === 'page-teacher') showTeachers();
+    if (id === 'page-questions') {
+      document.querySelector('.thanks-msg').style.display = 'none';
+      document.querySelectorAll('.emoji-btn.selected')
+              .forEach(b => b.classList.remove('selected'));
     }
-    document.querySelectorAll('.campus-thumb').forEach(el => {
-      el.onclick = () => {
-        document.querySelectorAll('.campus-thumb')
-          .forEach(x => x.classList.remove('selected'));
-        el.classList.add('selected');
-        window.selectedCampus = el.dataset.campus;
-        goTo('page-teacher');
-      };
-    });
+  }
+  document.getElementById('splashBtn').onclick = () => goTo('page-campus');
+  function scrollToCampus() {
+    document.getElementById('campusCircles')
+      .scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 
-    // 2) Language toggle
-    document.getElementById('langSelect').addEventListener('change', e => {
-      document.querySelectorAll('.question').forEach(el => {
-        el.textContent = el.dataset[e.target.value];
-      });
+  // 2) Show teachers
+  function showTeachers() {
+    const grid = document.getElementById('teacher-list');
+    grid.innerHTML = '';
+    teacherMap[window.selectedCampus].forEach(name => {
+      const btn = document.createElement('button');
+      btn.onclick = () => goTo('page-questions');
+      btn.innerHTML = `<img src="${teacherPhotos[name]}" alt="${name}"/><div>${name}</div>`;
+      grid.appendChild(btn);
     });
-    document.getElementById('langSelect').dispatchEvent(new Event('change'));
-
-    // 3) Capture THRIVE ratings
-    const answers = {};
-    document.querySelectorAll('.emoji-row').forEach(row => {
-      row.addEventListener('click', e => {
-        if (!e.target.matches('.emoji-btn')) return;
-        row.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
-        e.target.classList.add('selected');
-        const code = row.closest('.question-block').dataset.code;
-        answers[code] = parseInt(e.target.dataset.rating, 10);
-      });
-    });
-
-    // 4) Submit handler & save to Firestore
-    async function saveVibeCheck() {
-      const user = firebase.auth().currentUser;
-      if (!user) {
-        alert('Still signing you in—please wait a moment and try again.');
-        return;
-      }
-      const payload = {
-        uid:       user.uid,
-        campus:    window.selectedCampus,
-        teacher:   window.selectedTeacher,
-        language:  document.getElementById('langSelect').value,
-        recommend: parseInt(document.getElementById('stars').value, 10),
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        ...answers
-      };
-      try {
-        const docRef = await db.collection('vibeChecks').add(payload);
-        console.log('Saved vibe check:', docRef.id, payload);
-      } catch (err) {
-        console.error('Error saving vibe check:', err);
-        alert('Couldn’t record your feedback—please try again.');
-      }
-    }
-    document.getElementById('vibe-form').addEventListener('submit', e => {
-      e.preventDefault();
-      if (Object.keys(answers).length < 6) {
-        alert('Please tap an emoji for all six questions before submitting.');
-        return;
-      }
-      saveVibeCheck();
-      document.querySelector('.thanks-msg').style.display = 'block';
-    });
-  </script>
-  <!-- ────────────────────────────────── -->
-
-  <!-- ─── FIREBASE COMPAT SDKs & INIT ─── -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script>
-    const firebaseConfig = {
-      apiKey:            "AIzaSyDd6uaoLk-6BDL7b4NggCYQz5NErUzFFWk",
-      authDomain:        "ithriveincas.firebaseapp.com",
-      projectId:         "ithriveincas",
-      storageBucket:     "ithriveincas.firebasestorage.app",
-      messagingSenderId: "873460211632",
-      appId:             "1:873460211632:web:015b40f2e4f08829458075",
-      measurementId:     "G-8QMJE6H7H2"
+  }
+  document.querySelectorAll('.campus-thumb').forEach(el => {
+    el.onclick = () => {
+      document.querySelectorAll('.campus-thumb')
+        .forEach(x => x.classList.remove('selected'));
+      el.classList.add('selected');
+      window.selectedCampus = el.dataset.campus;
+      goTo('page-teacher');
     };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    firebase.auth().onAuthStateChanged(user => {
-      if (!user) {
-        firebase.auth().signInAnonymously().catch(console.error);
-      } else {
-        console.log('Signed in as', user.uid);
-      }
+  });
+
+  // 3) Language toggle
+  document.getElementById('langSelect').addEventListener('change', e => {
+    document.querySelectorAll('.question').forEach(el => {
+      el.textContent = el.dataset[e.target.value];
     });
-  </script>
-  <!-- ──────────────────────────────────────── -->
+  });
+  document.getElementById('langSelect').dispatchEvent(new Event('change'));
+
+  // 4) Capture THRIVE ratings
+  const answers = {};
+  document.querySelectorAll('.emoji-row').forEach(row => {
+    row.addEventListener('click', e => {
+      if (!e.target.matches('.emoji-btn')) return;
+      row.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
+      e.target.classList.add('selected');
+      const code = row.closest('.question-block').dataset.code;
+      answers[code] = parseInt(e.target.dataset.rating, 10);
+    });
+  });
+
+  // 5) Submit handler & save to Firestore
+  async function saveVibeCheck() {
+    const user = firebase.auth().currentUser;
+    if (!user) {
+      alert('Still signing you in—please wait a moment and try again.');
+      return;
+    }
+    const payload = {
+      uid:       user.uid,
+      campus:    window.selectedCampus,
+      teacher:   window.selectedTeacher,
+      language:  document.getElementById('langSelect').value,
+      recommend: parseInt(document.getElementById('stars').value, 10),
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      ...answers
+    };
+    try {
+      const docRef = await db.collection('vibeChecks').add(payload);
+      console.log('Saved vibe check:', docRef.id, payload);
+    } catch (err) {
+      console.error('Error saving vibe check:', err);
+      alert('Couldn’t record your feedback—please try again.');
+    }
+  }
+  document.getElementById('vibe-form').addEventListener('submit', e => {
+    e.preventDefault();
+    if (Object.keys(answers).length < 6) {
+      alert('Please tap an emoji for all six questions before submitting.');
+      return;
+    }
+    saveVibeCheck();
+    document.querySelector('.thanks-msg').style.display = 'block';
+  });
+</script>
+<!-- ────────────────────────────────── -->
+
+<!-- ─── FIREBASE COMPAT SDKs & INIT ─── -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey:            "AIzaSyDd6uaoLk-6BDL7b4NggCYQz5NErUzFFWk",
+    authDomain:        "ithriveincas.firebaseapp.com",
+    projectId:         "ithriveincas",
+    storageBucket:     "ithriveincas.firebasestorage.app",
+    messagingSenderId: "873460211632",
+    appId:             "1:873460211632:web:015b40f2e4f08829458075",
+    measurementId:     "G-8QMJE6H7H2"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  firebase.auth().onAuthStateChanged(user => {
+    if (!user) {
+      firebase.auth().signInAnonymously().catch(console.error);
+    } else {
+      console.log('Signed in as', user.uid);
+    }
+  });
+</script>
 
 </body>
 </html>
