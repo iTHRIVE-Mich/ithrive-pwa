@@ -54,6 +54,28 @@
     .campus-thumb.selected { box-shadow: 0 0 0 4px #196f38; transform: scale(1.05); }
     .campus-thumb img { width:100px; height:100px; border-radius:50%; object-fit:cover; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
     .campus-thumb span { display:block; margin-top:10px; font-weight:600; }
+      /* ==== CAMPUS EMOJIS ==== */
+    #page-campus .emoji-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .emoji-tile {
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 120px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .tile-1 { background: #2E67A7; }
+    .tile-2 { background: #FFD400; }
+    .tile-3 { background: #428A33; }
+    .tile-4 { background: #737273; }
+    .emoji { font-size: 3rem; line-height: 1; }
+
 
     /* ==== TEACHER SELECT (Page 3) ==== */
     .btn.back {
@@ -163,6 +185,8 @@
           <span>San Jose</span>
         </div>
       </div>
+
+
     </section>
 
     <!-- PAGE 3: TEACHER SELECT -->
