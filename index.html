@@ -385,66 +385,67 @@
   </button>
 </div>
 
-      </form>
+         </form>
 
       <div class="thanks-msg">
         🌱 You’re helping your teacher help you thrive. Salamat! 🌱
       </div>
 
-<script>
-  async function saveVibeCheck() {
-    const user = firebase.auth().currentUser;
-    if (!user) {
-      alert('Still signing you in—please wait a moment and try again.');
-      return;
+  <!-- ─── ALL YOUR APP LOGIC in ONE SCRIPT ─── -->
+  <script>
+    // — SAVE FUNCTION —
+    async function saveVibeCheck() {
+      const user = firebase.auth().currentUser;
+      if (!user) {
+        alert('Still signing you in—please wait a moment and try again.');
+        return;
+      }
+      const payload = {
+        uid:       user.uid,
+        campus:    window.selectedCampus,
+        teacher:   window.selectedTeacher,
+        language:  document.getElementById('langSelect').value,
+        recommend: parseInt(document.getElementById('stars').value, 10),
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        ...answers
+      };
+      try {
+        const docRef = await db.collection('vibeChecks').add(payload);
+        console.log('Saved vibe check:', docRef.id, payload);
+      } catch (err) {
+        console.error('Error saving vibe check:', err);
+        alert('Couldn’t record your feedback—please try again.');
+      }
     }
-    // Build the payload
-    const payload = {
-      uid:       user.uid,
-      campus:    window.selectedCampus,
-      teacher:   window.selectedTeacher,
-      language:  document.getElementById('langSelect').value,
-      recommend: parseInt(document.getElementById('stars').value, 10),
-      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      ...answers  // your T/H/R/I/V/E ratings
-    };
-    try {
-      const docRef = await db.collection('vibeChecks').add(payload);
-      console.log('Saved vibe check:', docRef.id, payload);
-    } catch (err) {
-      console.error('Error saving vibe check:', err);
-      alert('Couldn’t record your feedback—please try again.');
-    }
-  }
-<script>
-    // NAV & RESET
+
+    // — NAVIGATION & RESET —
     function goTo(id) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.getElementById(id).classList.add('active');
       if (id === 'page-teacher') showTeachers();
       if (id === 'page-questions') {
         document.querySelector('.thanks-msg').style.display = 'none';
-        // clear any previous emoji selections:
-        document.querySelectorAll('.emoji-btn.selected').forEach(b => b.classList.remove('selected'));
+        document.querySelectorAll('.emoji-btn.selected')
+                .forEach(b => b.classList.remove('selected'));
       }
     }
-    document.getElementById('splashBtn').onclick = () => goTo('page-campus');
+
+    document.getElementById('splashBtn').addEventListener('click', () => goTo('page-campus'));
+
     function scrollToCampus() {
       document.getElementById('campusCircles')
-        .scrollIntoView({ behavior: 'smooth', block: 'start' });
+              .scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-
-    // CAMPUS → TEACHER
     document.querySelectorAll('.campus-thumb').forEach(el => {
-      el.onclick = () => {
+      el.addEventListener('click', () => {
         document.querySelectorAll('.campus-thumb').forEach(x => x.classList.remove('selected'));
         el.classList.add('selected');
         window.selectedCampus = el.dataset.campus;
         goTo('page-teacher');
-      };
+      });
     });
 
-    // SHOW TEACHERS
+    // — SHOW TEACHERS —
     const teacherMap = {
       Main: ["Reynaldo","Rona","Mar","Mercy","Nelia","Ishtin","Noelyn","Fendie","Sheilou","Robin","Johny","Fae","Lalaine","Lovely","Jerome","Joshua","Clarence","Eco"],
       South: ["Jayhard","Edwin","Lyka","Henry","Elsie"],
@@ -466,16 +467,15 @@
       });
     }
 
-    // LANGUAGE SWAP
+    // — LANGUAGE SWAP —
     document.getElementById('langSelect').addEventListener('change', e => {
       document.querySelectorAll('.question').forEach(el => {
         el.textContent = el.dataset[e.target.value];
       });
     });
-    // initialize question texts
     document.getElementById('langSelect').dispatchEvent(new Event('change'));
 
-    // CAPTURE RATINGS
+    // — CAPTURE RATINGS —
     const answers = {};
     document.querySelectorAll('.emoji-row').forEach(row => {
       row.addEventListener('click', e => {
@@ -487,20 +487,16 @@
       });
     });
 
-    // SUBMIT VIBE FORM
+    // — SUBMIT VIBE FORM —
     document.getElementById('vibe-form').addEventListener('submit', e => {
-  e.preventDefault();
-
-  // Check we have exactly 6 answers (T,H,R,I,V,E)
-  if (Object.keys(answers).length < 6) {
-    alert('Please tap an emoji for all six questions before submitting.');
-    return;
-  }
-
-  // everything’s good → record & thank
-  saveVibeCheck();
-  document.querySelector('.thanks-msg').style.display = 'block';
-});
+      e.preventDefault();
+      if (Object.keys(answers).length < 6) {
+        alert('Please tap an emoji for all six questions before submitting.');
+        return;
+      }
+      saveVibeCheck();
+      document.querySelector('.thanks-msg').style.display = 'block';
+    });
   </script>
 
   <!-- ─── FIREBASE COMPAT SETUP ─── -->
@@ -508,7 +504,6 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script>
-    // Use the same config you had in the module snippet:
     const firebaseConfig = {
       apiKey:            "AIzaSyDd6uaoLk-6BDL7b4NggCYQz5NErUzFFWk",
       authDomain:        "ithriveincas.firebaseapp.com",
@@ -518,12 +513,8 @@
       appId:             "1:873460211632:web:015b40f2e4f08829458075",
       measurementId:     "G-8QMJE6H7H2"
     };
-
-    // Initialize
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
-
-    // Invisible anonymous sign-in
     firebase.auth().onAuthStateChanged(user => {
       if (!user) {
         firebase.auth().signInAnonymously().catch(console.error);
@@ -532,7 +523,6 @@
       }
     });
   </script>
-  <!-- ────────────────────────────── -->
-
 </body>
 </html>
+
