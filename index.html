@@ -77,6 +77,33 @@
     .emoji { font-size: 3rem; line-height: 1; }
 
 
+#page-campus .emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+#page-campus .emoji-tile {
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+#page-campus .tile-1 { background: #2E67A7; }
+#page-campus .tile-2 { background: #FFD400; }
+#page-campus .tile-3 { background: #428A33; }
+#page-campus .tile-4 { background: #737273; }
+#page-campus .emoji {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+
+
+
     /* ==== TEACHER SELECT (Page 3) ==== */
     .btn.back {
       background:#fff; color:#196f38; border:2px solid #196f38;
@@ -185,6 +212,13 @@
           <span>San Jose</span>
         </div>
       </div>
+    <!-- Emoji tiles under campuses -->
+    <div class="emoji-grid">
+    <div class="emoji-tile tile-1"><div class="emoji">🔥</div></div>
+    <div class="emoji-tile tile-2"><div class="emoji">😎</div></div>
+    <div class="emoji-tile tile-3"><div class="emoji">😐</div></div>
+    <div class="emoji-tile tile-4"><div class="emoji">🫠</div></div>
+  </div>
 
 
     </section>
