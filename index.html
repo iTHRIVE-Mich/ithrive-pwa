@@ -57,7 +57,7 @@
       /* ==== CAMPUS EMOJIS ==== */
     #page-campus .emoji-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
       gap: 12px;
       margin-top: 20px;
     }
@@ -67,7 +67,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 120px;
+      min-height: 100px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
     .tile-1 { background: #2E67A7; }
@@ -79,7 +79,7 @@
 
 #page-campus .emoji-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   gap: 12px;
   margin-top: 20px;
 }
@@ -89,7 +89,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 120px;
+  min-height: 100px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 #page-campus .tile-1 { background: #2E67A7; }
@@ -466,11 +466,19 @@
 
     // SUBMIT VIBE FORM
     document.getElementById('vibe-form').addEventListener('submit', e => {
-      e.preventDefault();
-      console.log('Ratings:', answers, 'Recommend:', document.getElementById('stars').value);
-      // ← add your Firestore (or API) calls here
-      document.querySelector('.thanks-msg').style.display = 'block';
-    });
+  e.preventDefault();
+
+  // Check we have exactly 6 answers (T,H,R,I,V,E)
+  if (Object.keys(answers).length < 6) {
+    alert('Please tap an emoji for all six questions before submitting.');
+    return;
+  }
+
+  // everything’s good → record & thank
+  saveVibeCheck();
+  document.querySelector('.thanks-msg').style.display = 'block';
+});
+
 
     // PWA: service worker
     if ('serviceWorker' in navigator) {
