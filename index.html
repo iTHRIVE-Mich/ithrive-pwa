@@ -10,6 +10,7 @@
     rel="stylesheet"
   />
   <!-- PWA: manifest & theming -->
+  <link rel="manifest" href="/manifest.json" />
   <meta name="theme-color" content="#202c61" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -479,29 +480,17 @@
   saveVibeCheck();
   document.querySelector('.thanks-msg').style.display = 'block';
 });
+
+
+    // PWA: service worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker
+          .register('/sw.js')
+          .then(reg => console.log('SW registered ✔️', reg))
+          .catch(err => console.error('SW error ❗', err));
+      });
+    }
   </script>
-  <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyDd6uaoLk-6BDL7b4NggCYQz5NErUzFFWk",
-    authDomain: "ithriveincas.firebaseapp.com",
-    projectId: "ithriveincas",
-    storageBucket: "ithriveincas.firebasestorage.app",
-    messagingSenderId: "873460211632",
-    appId: "1:873460211632:web:015b40f2e4f08829458075",
-    measurementId: "G-8QMJE6H7H2"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
 </body>
 </html>
