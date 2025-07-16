@@ -100,29 +100,25 @@
   font-size: 3rem;
   line-height: 1;
 }
-
 #page-campus .emoji-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   gap: 12px;
   margin-top: 20px;
 }
 
 #page-campus .emoji-tile {
   border-radius: 12px;
-  /* reduce padding so emoji fills more space */
-  padding: 10px;
+  padding: 10px;       /* snug padding */
   display: flex;
   align-items: center;
   justify-content: center;
-  /* increase min-height to fit bigger emoji */
-  min-height: 180px;
+  min-height: auto;    /* let height adapt */
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
-/* make the emoji itself huge */
 #page-campus .emoji {
-  font-size: 200px;   /* ↑ bump this up or down to taste */
+  font-size: 6rem;     /* big but not overlapping */
   line-height: 1;
 }
 
@@ -381,9 +377,15 @@
 
         <!-- Submit -->
         <div class="submit-row">
-         <button class="btn submit" onclick="goTo('page-campus')">← Back</button>
-          <button type="submit" class="submit">Submit</button>
-        </div>
+  <!-- make this a plain button and use your .back style -->
+  <button type="button" class="btn back" onclick="goTo('page-campus')">
+    ← Back
+  </button>
+  <button type="submit" class="submit">
+    Submit
+  </button>
+</div>
+
       </form>
 
       <div class="thanks-msg">
