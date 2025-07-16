@@ -101,6 +101,31 @@
   line-height: 1;
 }
 
+#page-campus .emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+
+#page-campus .emoji-tile {
+  border-radius: 12px;
+  /* reduce padding so emoji fills more space */
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* increase min-height to fit bigger emoji */
+  min-height: 180px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* make the emoji itself huge */
+#page-campus .emoji {
+  font-size: 200px;   /* ↑ bump this up or down to taste */
+  line-height: 1;
+}
+
 
 
 
