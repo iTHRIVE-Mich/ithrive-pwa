@@ -663,18 +663,16 @@
       } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
       // 1) Init Firebase
-      const firebaseConfig = {
-        apiKey: "AIzaSyDd6uaoLk-6BDL7b4NggCYz5NErUzFFWk",
-        authDomain: "ithriveincas.firebaseapp.com",
-        projectId: "ithriveincas",
-        storageBucket: "ithriveincas.appspot.com",
-        messagingSenderId: "873460211632",
-        appId: "1:873460211632:web:015b40f2e4f08829458075",
-        measurementId: "G-8QMJE6H7H2"
-      };
-      const app = initializeApp(firebaseConfig);
-      getAnalytics(app);
-      const db = getFirestore(app);
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyDd6uaoLk-6BDL7b4NggCYQz5NErUzFFWk",
+  authDomain: "ithriveincas.firebaseapp.com",
+  projectId: "ithriveincas",
+  storageBucket: "ithriveincas.firebasestorage.app",
+  messagingSenderId: "873460211632",
+  appId: "1:873460211632:web:015b40f2e4f08829458075",
+  measurementId: "G-8QMJE6H7H2"
+};
 
       // 2) Teacher → Photo & Campus
       const teacherMap2 = {
