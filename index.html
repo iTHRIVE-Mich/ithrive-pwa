@@ -184,6 +184,7 @@
 
 <!-- Firebase (modular) & Firestore setup -->
 <script type="module">
+  // 1️⃣ Imports (including onSnapshot)
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
   import { getAnalytics }    from "https://www.gstatic.com/firebasejs/11.10.0/firebase-analytics.js";
   import {
@@ -191,13 +192,13 @@
     collection,
     addDoc,
     serverTimestamp,
-    getDocs,
     query,
     where,
-    Timestamp
+    Timestamp,
+    onSnapshot
   } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
-  // ── Your Firebase config ──
+  // 2️⃣ Your Firebase config (copy exactly from Console → Settings)
   const firebaseConfig = {
     apiKey: "AIzaSyDd6uaoLk-6BDL7b4NggCYQz5NErUzFFWk",
     authDomain: "ithriveincas.firebaseapp.com",
@@ -208,14 +209,15 @@
     measurementId: "G-8QMJE6H7H2"
   };
 
-  // ── Initialize Firebase & services ──
+  // 3️⃣ Initialize Firebase & Firestore
   const app       = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
   const db        = getFirestore(app);
 
   // ── Save one Vibe Check ──
   window.saveVibeCheck = async function(teacherName, teacherCampus, answers) {
-    const avgScore = Object.values(answers).reduce((a,b) => a+b, 0) / Object.values(answers).length;
+    const avgScore = Object.values(answers).reduce((a,b) => a + b, 0) 
+                   / Object.values(answers).length;
     await addDoc(collection(db, "vibeChecks"), {
       teacherName,
       teacherCampus,
@@ -225,54 +227,61 @@
     });
   };
 
-  // ── Render Top-5 Leaderboard ──
-  async function renderLeaderboard() {
+  // ── Real-time Leaderboard Listener ──
+  function startLeaderboardListener() {
     const start = new Date("2025-07-21T00:00:00");
     const end   = new Date(start);
     end.setDate(end.getDate() + 14);
-    if (Date.now() < start.getTime()) {
-      document.getElementById("leaderboard-list").innerHTML =
-        `<li>Leaderboard begins on July 21, 2025.</li>`;
-      return;
-    }
+
     const q = query(
       collection(db, "vibeChecks"),
       where("ts", ">=", Timestamp.fromDate(start)),
       where("ts", "<",  Timestamp.fromDate(end))
     );
-    const snap = await getDocs(q);
-    const agg = {};
-    snap.forEach(doc => {
-      const { teacherName, teacherCampus, answers } = doc.data();
-      const extreme = Object.values(answers).filter(v=>v===1||v===4);
-      if (!extreme.length) return;
-      const sum = extreme.reduce((s,v)=>s+v, 0),
-            cnt = extreme.length;
-      (agg[teacherName] ??= { sum:0, cnt:0, campus:teacherCampus });
-      agg[teacherName].sum += sum;
-      agg[teacherName].cnt += cnt;
-    });
-    const top5 = Object.entries(agg)
-      .map(([name,{sum,cnt,campus}]) => ({ name, campus, avg: sum/cnt }))
-      .sort((a,b)=>b.avg-a.avg)
-      .slice(0,5);
-    const ol = document.getElementById("leaderboard-list");
-    ol.innerHTML = "";
-    top5.forEach(({name,campus},i) => {
-      const li = document.createElement("li");
-      li.innerHTML = `
-        <img src="https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/${encodeURIComponent(name)}.png"
-             class="leader-img" alt="${name}">
-        <div class="leader-info">
-          <div class="leader-name">${name}</div>
-          <div class="leader-campus">${campus}</div>
-        </div>
-        <div class="leader-rank">${i+1}</div>`;
-      ol.appendChild(li);
+
+    onSnapshot(q, snapshot => {
+      const agg = {};
+      snapshot.forEach(doc => {
+        const { teacherName, teacherCampus, answers } = doc.data();
+        const extreme = Object.values(answers).filter(v => v === 1 || v === 4);
+        if (!extreme.length) return;
+        const sum = extreme.reduce((s, v) => s + v, 0);
+        const cnt = extreme.length;
+        if (!agg[teacherName]) {
+          agg[teacherName] = { sum: 0, cnt: 0, campus: teacherCampus };
+        }
+        agg[teacherName].sum += sum;
+        agg[teacherName].cnt += cnt;
+      });
+
+      const top5 = Object.entries(agg)
+        .map(([name, { sum, cnt, campus }]) => ({ name, campus, avg: sum / cnt }))
+        .sort((a, b) => b.avg - a.avg)
+        .slice(0, 5);
+
+      const ol = document.getElementById("leaderboard-list");
+      ol.innerHTML = "";
+      top5.forEach(({ name, campus }, i) => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <img src="https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/${encodeURIComponent(name)}.png"
+               class="leader-img" alt="${name}">
+          <div class="leader-info">
+            <div class="leader-name">${name}</div>
+            <div class="leader-campus">${campus}</div>
+          </div>
+          <div class="leader-rank">${i + 1}</div>`;
+        ol.appendChild(li);
+      });
+    }, err => {
+      console.error("Leaderboard listener error:", err);
     });
   }
 
-  document.addEventListener("DOMContentLoaded", renderLeaderboard);
+  // 4️⃣ Start the listener once DOM is ready
+  document.addEventListener("DOMContentLoaded", startLeaderboardListener);
+</script>
+
 </script>
 
 
