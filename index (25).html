@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>iTHRIVE.</title>
+  <!-- GOOGLE FONT -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap"
+    rel="stylesheet"
+  />
+  <!-- PWA: manifest & theming -->
+  <meta name="theme-color" content="#202c61" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="iTHRIVE" />
+  <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+  <style>
+    /* ==== GLOBAL ==== */
+    body { margin: 0; background: #f4f6fa; font-family: 'Montserrat', Arial, sans-serif; color: #202c61; }
+    .layout { min-height: 100vh; }
+    .page { display: none; padding: 20px; max-width: 600px; margin: 30px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+    .page.active { display: block; }
+    h2, p { text-align: center; }
+
+    /* ===== HEADER ===== */
+    header { background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 10px 20px; display: flex; align-items: center; }
+    header img { height: 60px; margin-right: 18px; cursor: pointer; }
+    .slogan-container { flex: 1; text-align: center; }
+    .slogan { display: flex; justify-content: center; gap: .5em; font-size: 2rem; font-weight: 700; }
+    .slogan .iwant   { color: #196f38; }
+    .slogan .ican    { color: #ffd400; }
+    .slogan .ibelong { color: #202c61; }
+    .slogan .ithrive { color: #ffd400; }
+    .subline { margin-top: 4px; font-size: 1rem; color: #0d47a1; font-weight: 600; }
+
+    /* ==== SPLASH (Page 1) ==== */
+    #page-splash .splash-container { text-align: center; }
+    #page-splash .splash-container img { width: 100%; border-radius: 8px; }
+    #page-splash button {
+      margin-top: 20px; width: 100%; padding: 15px; font-size: 1.1rem;
+      background: #196f38; color: #fff; border: none; border-radius: 8px; cursor: pointer;
+    }
+
+    /* ==== CAMPUS PICKER (Page 2) ==== */
+    #page-campus .campus-header-btn {
+      width: 100%; padding: 15px; font-size: 1.1rem; background: #0d47a1; color: #fff;
+      border: none; border-radius: 8px; cursor: pointer; margin-bottom: 20px; text-transform: uppercase;
+    }
+    #page-campus .campus-circles { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; margin-bottom: 30px; }
+    .campus-thumb { text-align: center; cursor: pointer; transition: transform .2s, box-shadow .2s; }
+    .campus-thumb.selected { box-shadow: 0 0 0 4px #196f38; transform: scale(1.05); }
+    .campus-thumb img { width:100px; height:100px; border-radius:50%; object-fit:cover; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
+    .campus-thumb span { display:block; margin-top:10px; font-weight:600; }
+
+    /* ==== CAMPUS EMOJIS ==== */
+    #page-campus .emoji-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 12px;
+      margin-top: 20px;
+    }
+    #page-campus .emoji-tile {
+      border-radius: 12px;
+      padding: 10px;       /* snug padding */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: auto;    /* let height adapt */
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    #page-campus .tile-1 { background: #2E67A7; }
+    #page-campus .tile-2 { background: #FFD400; }
+    #page-campus .tile-3 { background: #428A33; }
+    #page-campus .tile-4 { background: #737273; }
+    #page-campus .emoji {
+      font-size: 6rem;     /* big but not overlapping */
+      line-height: 1;
+    }
+
+    /* ==== TEACHER SELECT (Page 3) ==== */
+    .btn.back {
+      background:#fff; color:#196f38; border:2px solid #196f38;
+      width:100%; padding:12px; font-weight:700; cursor:pointer; margin-bottom:20px;
+    }
+    .grid { display:flex; gap:18px; flex-wrap:wrap; justify-content:center; }
+    .grid button {
+      width:160px; height:200px; border:none; border-radius:18px;
+      background:#fff; box-shadow:0 0 6px rgba(0,0,0,0.1);
+      border-bottom:5px solid #ffd400; display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
+      transition:transform .1s; cursor:pointer;
+    }
+    .grid button:hover { transform:scale(1.05); }
+    .grid img { width:110px; height:110px; margin-top:20px; object-fit:contain; }
+    .grid div { width:100%; text-align:center; padding:10px 0 6px; font-weight:600; font-size:1.1rem; }
+
+    /* ==== VIBE QUESTIONS (Page 4) ==== */
+    .top-row { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:16px; }
+    .thrive-banner { font-weight:700; font-size:1rem; color:#196f38; white-space:nowrap; }
+    .lang-toggle select {
+      padding:6px 8px; font-size:1.1rem; border-radius:8px; border:1.5px solid #ccc; background:#fff; cursor:pointer;
+    }
+    .emoji-guide { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin:20px 0; }
+    .emoji-guide .tile {
+      padding:20px; border-radius:12px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.08);
+    }
+    .emoji-guide .emoji { font-size:48px; line-height:1; }
+    .emoji-guide .emoji-text {
+      margin-top:8px; font-size:.85rem; line-height:1.2; background:#fff; color:#202c61;
+      padding:4px 8px; border-radius:4px; display:inline-block;
+    }
+    .question-block { margin-bottom:24px; }
+    .question { font-size:.95rem; margin-bottom:8px; }
+    .emoji-row { display:flex; justify-content:space-around; gap:12px; margin-bottom:0; }
+    .emoji-btn { font-size:36px; background:none; border:none; cursor:pointer; transition:transform .1s; }
+    .emoji-btn.selected { transform:scale(1.3); }
+    .submit-row { display:flex; justify-content:space-between; gap:10px; margin-top:20px; flex-wrap:wrap; }
+    .submit-row button {
+      flex:1; padding:10px; font-size:1rem; font-weight:600; border-radius:10px; cursor:pointer; text-align:center;
+    }
+    .submit-row .back { background:#fff; color:#202c61; border:2px solid #202c61; }
+    .submit-row .submit { background:#196f38; color:#fff; border:none; }
+    .thanks-msg {
+      display:none; margin-top:30px; font-size:1.05rem; font-weight:600; color:#196f38; text-align:center;
+    }
+
+    @media(max-width:600px){
+      .emoji-guide { grid-template-columns:1fr; }
+      .submit-row { flex-direction:column; }
+      .submit-row button { width:100%; }
+    }
+
+    /* —— LEADERBOARD STYLES —— */
+    #leaderboard-list {
+      list-style: none;
+      padding: 0;
+      margin: 1rem 0;
+    }
+    #leaderboard-list li {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    #leaderboard-list img.leader-img {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    #leaderboard-list .leader-info {
+      display: flex;
+      flex-direction: column;
+    }
+    #leaderboard-list .leader-name {
+      font-weight: bold;
+    }
+    #leaderboard-list .leader-campus {
+      font-size: 0.9rem;
+      color: #555;
+    }
+    #leaderboard-list .leader-rank {
+      margin-left: auto;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+ /* NAV BUTTON COLORS */
+#main-nav button {
+  flex: none;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+}
+/* “Leaderboard” in yellow */
+#main-nav .leaderboard-btn {
+  background:#FFD400;
+  color: #ffffff;
+}
+
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <!-- HEADER -->
+    <header>
+      <img
+        src="https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/ithrive logo.png"
+        alt="Logo"
+        onclick="goTo('page-splash')"
+      />
+      <div class="slogan-container">
+        <div class="slogan">
+          <span class="iwant">I WANT.</span>
+          <span class="ican">I CAN.</span>
+          <span class="ibelong">I BELONG.</span>
+          <span class="ithrive">I THRIVE.</span>
+        </div>
+        <div class="subline">
+          No Names. One Tap. One Emoji for a Thriving Class.
+        </div>
+      </div>
+    </header>
+
+    <!-- GLOBAL NAV BAR -->
+    <div id="main-nav" style="display:flex; gap:1rem; padding:1rem; border-bottom:1px solid #ddd;">
+      <button type="button" onclick="goTo('page-leaderboard')">Leaderboard</button>
+    </div>
+
+    <!-- PAGE 1: SPLASH -->
+    <section id="page-splash" class="page active">
+      <div class="splash-container">
+        <img
+          src="https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/cover.png"
+          alt="Welcome"
+        />
+      </div>
+      <button id="splashBtn">Tap when you're ready.</button>
+    </section>
+
+    <!-- PAGE 2: CAMPUS PICKER -->
+    <section id="page-campus" class="page">
+      <button class="campus-header-btn" type="button" onclick="scrollToCampus()">
+        Select Campus
+      </button>
+      <div id="campusCircles" class="campus-circles">
+        <div class="campus-thumb" data-campus="Main">
+          <img src="https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/Main.png" alt="Main"/>
+          <span>Main</span>
+        </div>
+        <div class="campus-thumb" data-campus="South">
+          <img src="https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/South.png" alt="South"/>
+          <span>South</span>
+        </div>
+        <div class="campus-thumb" data-campus="San Jose">
+          <img src="https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/San%20Jose.png" alt="San Jose"/>
+          <span>San Jose</span>
+        </div>
+      </div>
+      <div class="emoji-grid">
+        <div class="emoji-tile tile-1"><div class="emoji">🔥</div></div>
+        <div class="emoji-tile tile-2"><div class="emoji">😎</div></div>
+        <div class="emoji-tile tile-3"><div class="emoji">😐</div></div>
+        <div class="emoji-tile tile-4"><div class="emoji">🫠</div></div>
+      </div>
+    </section>
+
+    <!-- PAGE 3: TEACHER SELECT -->
+    <section id="page-teacher" class="page">
+      <button class="btn submit" onclick="goTo('page-campus')">← Back</button>
+      <h2>Ready. Tap. Thrive.</h2>
+      <div id="teacher-list" class="grid"></div>
+    </section>
+
+    <!-- PAGE 4: THRIVE CHECK QUESTIONS -->
+    <section id="page-questions" class="page">
+      <div class="top-row">
+        <div class="thrive-banner">
+          Teach. Help. Real-Life Application. Interaction. Voice. Engage.
+        </div>
+        <div class="lang-toggle">
+          <select id="langSelect">
+            <option value="tl">💚</option>
+            <option value="en">🤯</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="emoji-guide">
+        <div class="tile" style="background:#2E67A7;color:white;">
+          <div class="emoji">🔥</div>
+          <div class="emoji-text">Always: Consistent. Solid!</div>
+        </div>
+        <div class="tile" style="background:#FFD400;color:#202c61;">
+          <div class="emoji">😎</div>
+          <div class="emoji-text">Often: Chill and Steady.</div>
+        </div>
+        <div class="tile" style="background:#428A33;color:white;">
+          <div class="emoji">😐</div>
+          <div class="emoji-text">Sometimes: Saks lang.</div>
+        </div>
+        <div class="tile" style="background:#737273;color:white;">
+          <div class="emoji">🫠</div>
+          <div class="emoji-text">Rarely: Dimasyado ramdam.</div>
+        </div>
+      </div>
+
+      <form id="vibe-form">
+        <!-- T -->
+        <div class="question-block" data-code="T">
+          <div class="question"
+               data-tl="T: Naiintindihan ko ang lesson dahil sa mga aktibidad ng aking guro."
+               data-en="T: I understand the lessons with the help of activities provided by my teacher.">
+          </div>
+          <div class="emoji-row">
+            <button type="button" class="emoji-btn" data-rating="4">🔥</button>
+            <button type="button" class="emoji-btn" data-rating="3">😎</button>
+            <button type="button" class="emoji-btn" data-rating="2">😐</button>
+            <button type="button" class="emoji-btn" data-rating="1">🫠</button>
+          </div>
+        </div>
+        <!-- H -->
+        <div class="question-block" data-code="H">
+          <div class="question"
+               data-tl="H: Natutulungan ako ng guro ko kapag nahihirapan ako sa mga gawain."
+               data-en="H: I receive help from my teacher on how to complete the activities/tasks/modules.">
+          </div>
+          <div class="emoji-row">
+            <button type="button" class="emoji-btn" data-rating="4">🔥</button>
+            <button type="button" class="emoji-btn" data-rating="3">😎</button>
+            <button type="button" class="emoji-btn" data-rating="2">😐</button>
+            <button type="button" class="emoji-btn" data-rating="1">🫠</button>
+          </div>
+        </div>
+        <!-- R -->
+        <div class="question-block" data-code="R">
+          <div class="question"
+               data-tl="R: Nagagamit ko sa totoong buhay ang mga natutunan ko sa klase."
+               data-en="R: I can apply what I learned in class to real-life situations.">
+          </div>
+          <div class="emoji-row">
+            <button type="button" class="emoji-btn" data-rating="4">🔥</button>
+            <button type="button" class="emoji-btn" data-rating="3">😎</button>
+            <button type="button" class="emoji-btn" data-rating="2">😐</button>
+            <button type="button" class="emoji-btn" data-rating="1">🫠</button>
+          </div>
+        </div>
+        <!-- I -->
+        <div class="question-block" data-code="I">
+          <div class="question"
+               data-tl="I: Nakikilahok ako sa klase dahil interesting at nakaka-challenge ang mga tanong."
+               data-en="I: I was actively involved in class activities because the questions were interesting and challenging.">
+          </div>
+          <div class="emoji-row">
+            <button type="button" class="emoji-btn" data-rating="4">🔥</button>
+            <button type="button" class="emoji-btn" data-rating="3">😎</button>
+            <button type="button" class="emoji-btn" data-rating="2">😐</button>
+            <button type="button" class="emoji-btn" data-rating="1">🫠</button>
+          </div>
+        </div>
+        <!-- V -->
+        <div class="question-block" data-code="V">
+          <div class="question"
+               data-tl="V: Komportable akong magbahagi ng ideas at magtanong sa klase."
+               data-en="V: I felt comfortable sharing my ideas and questions.">
+          </div>
+          <div class="emoji-row">
+            <button type="button" class="emoji-btn" data-rating="4">🔥</button>
+            <button type="button" class="emoji-btn" data-rating="3">😎</button>
+            <button type="button" class="emoji-btn" data-rating="2">😐</button>
+            <button type="button" class="emoji-btn" data-rating="1">🫠</button>
+          </div>
+        </div>
+        <!-- E -->
+        <div class="question-block" data-code="E">
+          <div class="question"
+               data-tl="E: Nakatanggap ako ng feedback mula kay teacher na nagpalakas ng loob ko."
+               data-en="E: I received feedback from my teacher that encouraged me to improve.">
+          </div>
+          <div class="emoji-row">
+            <button type="button" class="emoji-btn" data-rating="4">🔥</button>
+            <button type="button" class="emoji-btn" data-rating="3">😎</button>
+            <button type="button" class="emoji-btn" data-rating="2">😐</button>
+            <button type="button" class="emoji-btn" data-rating="1">🫠</button>
+          </div>
+        </div>
+      </form>
+
+      <!-- Feedback Widget Start -->
+      <div id="feedback-widget">
+        <style>
+          /* —— CORE STYLES —— */
+          #feedback-widget .recommend-container { margin-bottom: 1rem; }
+          #feedback-widget label { display: block; font-weight: bold; margin-bottom: 0.5rem; }
+          #feedback-widget select {
+            width: 100%; padding: 0.5rem; font-size: 1rem;
+            border: 1px solid #ccc; border-radius: 0.375rem;
+          }
+          #feedback-widget .submit-row {
+            display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1rem;
+          }
+          #feedback-widget .submit-row button {
+            flex: none; padding: 0.75rem 1.5rem; font-size: 1rem;
+            border-radius: 0.375rem; border: 2px solid transparent;
+            background: #2f855a; color: white; cursor: pointer;
+          }
+          #feedback-widget .submit-row button.back {
+            background: white; color: #2d3748; border-color: #2d3748;
+          }
+          #feedback-widget .thanks-msg {
+            display: none; margin-top: 1.5rem; padding: 1rem;
+            text-align: center; font-size: 1.1rem;
+            background: #f0fff4; border: 1px solid #c6f6d5; border-radius: 0.375rem;
+          }
+
+          /* —— FORCE CLICKABILITY —— */
+          #feedback-widget,
+          #feedback-widget .submit-row,
+          #feedback-widget .submit-row button {
+            position: relative !important;
+            z-index: 9999   !important;
+            pointer-events: auto !important;
+            cursor: pointer  !important;
+          }
+        </style>
+
+        <div id="feedbackForm">
+          <div class="recommend-container">
+            <label for="stars">
+              <b>How much would you hype Ma'am/Sir to a friend?</b>
+            </label>
+            <select id="stars" name="hypeLevel" required>
+              <option value="" disabled selected>Choose rating</option>
+              <option value="4">⭐⭐⭐⭐</option>
+              <option value="3">⭐⭐⭐</option>
+              <option value="2">⭐⭐</option>
+              <option value="1">⭐</option>
+            </select>
+          </div>
+          <div class="submit-row">
+            <button type="button" class="back" onclick="goTo('page-campus')">
+              Back
+            </button>
+            <button type="button" id="feedbackSubmitBtn">
+              Submit
+            </button>
+          </div>
+        </div>
+        <div class="thanks-msg">
+          🌱 You’re helping your teacher help you thrive. Salamat! 🌱
+        </div>
+      </div>
+      <!-- Feedback Widget End -->
+
+      <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          const formDiv   = document.getElementById('feedbackForm');
+          const submitBtn = document.getElementById('feedbackSubmitBtn');
+          const thanks    = document.querySelector('#feedback-widget .thanks-msg');
+          const selectEl  = document.getElementById('stars');
+
+          // hide thank-you initially
+          thanks.style.display = 'none';
+
+          submitBtn.addEventListener('click', () => {
+            // validate rating
+            if (!selectEl.value) {
+              alert('Please select a rating before submitting.');
+              return;
+            }
+            // ensure emoji form complete
+            if (Object.keys(answers).length < 6) {
+              alert('Please tap an emoji for all six questions before submitting.');
+              return;
+            }
+            formDiv.style.display = 'none';
+            thanks.style.display  = 'block';
+            thanks.scrollIntoView({ behavior: 'smooth' });
+          });
+        });
+      </script>
+
+      <!-- LEADERBOARD PAGE -->
+      <section id="page-leaderboard" class="page" style="display:none;">
+        <h2>🌟 Leaderboard: Top 5 Teachers</h2>
+        <ol id="leaderboard-list"></ol>
+      </section>
+
+    </div> <!-- end of .layout -->
+
+    <script>
+      // NAV & RESET
+      function goTo(id) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        if (id === 'page-teacher') showTeachers();
+        if (id === 'page-questions') {
+          document.querySelector('#page-questions .thanks-msg').style.display = 'none';
+          document.querySelectorAll('.emoji-btn.selected').forEach(b => b.classList.remove('selected'));
+        }
+        if (id === 'page-leaderboard' && typeof renderLeaderboard === 'function') {
+          renderLeaderboard();
+        }
+      }
+      document.getElementById('splashBtn').onclick = () => goTo('page-campus');
+      function scrollToCampus() {
+        document.getElementById('campusCircles').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      // CAMPUS → TEACHER
+      document.querySelectorAll('.campus-thumb').forEach(el => {
+        el.onclick = () => {
+          document.querySelectorAll('.campus-thumb').forEach(x => x.classList.remove('selected'));
+          el.classList.add('selected');
+          window.selectedCampus = el.dataset.campus;
+          goTo('page-teacher');
+        };
+      });
+
+      // SHOW TEACHERS
+      const teacherMap = {
+        Main: ["Reynaldo","Rona","Mar","Mercy","Nelia","Ishtin","Noelyn","Fendie","Sheilou","Robin","Johny","Fae","Lalaine","Lovely","Jerome","Joshua","Clarence","Eco"],
+        South: ["Jayhard","Edwin","Lyka","Henry","Elsie"],
+        "San Jose": ["Dawn","Cristine","Beverly","Philip","Bryan","Yves"]
+      };
+      const teacherPhotos = Object.fromEntries(
+        Object.entries(teacherMap).flatMap(([campus,list]) =>
+          list.map(name => [name, `https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/${encodeURIComponent(name)}.png`])
+        )
+      );
+      function showTeachers() {
+        const grid = document.getElementById('teacher-list');
+        grid.innerHTML = '';
+        teacherMap[window.selectedCampus].forEach(name => {
+          const btn = document.createElement('button');
+          btn.onclick = () => { window.selectedTeacher = name; goTo('page-questions'); };
+          btn.innerHTML = `<img src="${teacherPhotos[name]}" alt="${name}"/><div>${name}</div>`;
+          grid.appendChild(btn);
+        });
+      }
+
+      // LANGUAGE SWAP
+      document.getElementById('langSelect').addEventListener('change', e => {
+        document.querySelectorAll('.question').forEach(el => {
+          el.textContent = el.dataset[e.target.value];
+        });
+      });
+      document.getElementById('langSelect').dispatchEvent(new Event('change'));
+
+      // CAPTURE RATINGS
+      const answers = {};
+      document.querySelectorAll('.emoji-row').forEach(row => {
+        row.addEventListener('click', e => {
+          if (!e.target.matches('.emoji-btn')) return;
+          row.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
+          e.target.classList.add('selected');
+          const code = row.closest('.question-block').dataset.code;
+          answers[code] = parseInt(e.target.dataset.rating, 10);
+        });
+      });
+
+      // SUBMIT VIBE FORM
+      document.getElementById('vibe-form').addEventListener('submit', e => {
+        e.preventDefault();
+        if (Object.keys(answers).length < 6) {
+          alert('Please tap an emoji for all six questions before submitting.');
+          return;
+        }
+        saveVibeCheck();
+        document.querySelector('#page-questions .thanks-msg').style.display = 'block';
+      });
+    </script>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+      import { getAnalytics }  from "https://www.gstatic.com/firebasejs/11.10.0/firebase-analytics.js";
+      import {
+        getFirestore,
+        collection,
+        addDoc,
+        getDocs,
+        serverTimestamp,
+        Timestamp,
+        query,
+        where
+      } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+      // 1) Init Firebase
+      const firebaseConfig = {
+        apiKey: "AIzaSyDd6uaoLk-6BDL7b4NggCYz5NErUzFFWk",
+        authDomain: "ithriveincas.firebaseapp.com",
+        projectId: "ithriveincas",
+        storageBucket: "ithriveincas.appspot.com",
+        messagingSenderId: "873460211632",
+        appId: "1:873460211632:web:015b40f2e4f08829458075",
+        measurementId: "G-8QMJE6H7H2"
+      };
+      const app = initializeApp(firebaseConfig);
+      getAnalytics(app);
+      const db = getFirestore(app);
+
+      // 2) Teacher → Photo & Campus
+      const teacherMap2 = {
+        Main:    ["Reynaldo","Rona","Mar","Mercy","Nelia","Ishtin","Noelyn","Fendie","Sheilou","Robin","Johny","Fae","Lalaine","Lovely","Jerome","Joshua","Clarence","Eco"],
+        South:   ["Jayhard","Edwin","Lyka","Henry","Elsie"],
+        "San Jose": ["Dawn","Cristine","Beverly","Philip","Bryan","Yves"]
+      };
+      const teacherPhotos2 = Object.fromEntries(
+        Object.entries(teacherMap2).flatMap(([campus,list]) =>
+          list.map(name => [
+            name,
+            `https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/${encodeURIComponent(name)}.png`
+          ])
+        )
+      );
+
+      // 3) saveVibeCheck
+      window.saveVibeCheck = async function() {
+        const scores = Object.values(answers);
+        const avgScore = scores.reduce((a,b) => a+b, 0) / scores.length;
+        await addDoc(collection(db, "vibeChecks"), {
+          teacherName:   window.selectedTeacher,
+          teacherCampus: window.selectedCampus,
+          answers,
+          avgScore,
+          ts:            serverTimestamp()
+        });
+      };
+
+      // 4) Render Top 5 for July 21–Aug 4 window
+      async function renderLeaderboard() {
+        const startDate = new Date("2025-07-21T00:00:00");
+        const endDate   = new Date(startDate);
+        endDate.setDate(endDate.getDate() + 14);
+
+        // Before start...
+        if (Date.now() < startDate.getTime()) {
+          document.getElementById("leaderboard-list").innerHTML = `
+            <li>Leaderboard begins on July 21, 2025.</li>
+          `;
+          return;
+        }
+
+        // Query 14-day window
+        const q = query(
+          collection(db, "vibeChecks"),
+          where("ts", ">=", Timestamp.fromDate(startDate)),
+          where("ts", "<",  Timestamp.fromDate(endDate))
+        );
+        const snap = await getDocs(q);
+
+        // Aggregate 1★ & 4★ only
+        const agg = {};
+        snap.forEach(doc => {
+          const { teacherName, teacherCampus, answers } = doc.data();
+          const extreme = Object.values(answers).filter(v => v===1||v===4);
+          if (!extreme.length) return;
+          const sum = extreme.reduce((s,v)=>s+v, 0);
+          const cnt = extreme.length;
+          if (!agg[teacherName]) {
+            agg[teacherName] = { sum:0, cnt:0, campus:teacherCampus };
+          }
+          agg[teacherName].sum += sum;
+          agg[teacherName].cnt += cnt;
+        });
+
+        // Sort & pick top 5
+        const arr = Object.entries(agg).map(([name,{sum,cnt,campus}])=>({
+          name, campus, avg: sum/cnt
+        }));
+        arr.sort((a,b)=>b.avg-a.avg);
+        const top5 = arr.slice(0,5);
+
+        // Render
+        const ol = document.getElementById("leaderboard-list");
+        ol.innerHTML = "";
+        top5.forEach(({name,campus},i) => {
+          const li = document.createElement("li");
+          li.innerHTML = `
+            <img src="${teacherPhotos2[name]}" alt="${name}" class="leader-img"/>
+            <div class="leader-info">
+              <div class="leader-name">${name}</div>
+              <div class="leader-campus">${campus}</div>
+            </div>
+            <div class="leader-rank">${i+1}</div>
+          `;
+          ol.appendChild(li);
+        });
+      }
+
+      document.addEventListener("DOMContentLoaded", renderLeaderboard);
+    </script>
+</body>
+</html>
