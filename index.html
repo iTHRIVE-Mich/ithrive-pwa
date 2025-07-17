@@ -16,6 +16,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="iTHRIVE" />
   <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+
   <style>
     /* ==== GLOBAL ==== */
     body { margin: 0; background: #f4f6fa; font-family: 'Montserrat', Arial, sans-serif; color: #202c61; }
@@ -141,6 +142,7 @@
     #main-nav .leaderboard-btn { background:#FFD400; color:#fff; }
   </style>
 </head>
+
 <body>
   <div class="layout">
     <!-- HEADER -->
@@ -165,6 +167,7 @@
 
     <!-- GLOBAL NAV BAR -->
     <div id="main-nav" style="display:flex; gap:1rem; padding:1rem; border-bottom:1px solid #ddd;">
+      <button type="button" onclick="goTo('page-questions')">Thrive</button>
       <button type="button" onclick="goTo('page-leaderboard')">Leaderboard</button>
     </div>
 
@@ -208,7 +211,7 @@
 
     <!-- PAGE 3: TEACHER SELECT -->
     <section id="page-teacher" class="page">
-      <button class="btn submit" onclick="goTo('page-campus')">← Back</button>
+      <button class="btn back" onclick="goTo('page-campus')">← Back</button>
       <h2>Ready. Tap. Thrive.</h2>
       <div id="teacher-list" class="grid"></div>
     </section>
@@ -226,16 +229,48 @@
       </div>
 
       <div class="emoji-guide">
-        <!-- your 4-tile legend… -->
+        <div class="tile" style="background:#2E67A7;color:white;">
+          <div class="emoji">🔥</div>
+          <div class="emoji-text">Always: Consistent. Solid!</div>
+        </div>
+        <div class="tile" style="background:#FFD400;color:#202c61;">
+          <div class="emoji">😎</div>
+          <div class="emoji-text">Often: Chill and Steady.</div>
+        </div>
+        <div class="tile" style="background:#428A33;color:white;">
+          <div class="emoji">😐</div>
+          <div class="emoji-text">Sometimes: Saks lang.</div>
+        </div>
+        <div class="tile" style="background:#737273;color:white;">
+          <div class="emoji">🫠</div>
+          <div class="emoji-text">Rarely: Dimasyado ramdam.</div>
+        </div>
       </div>
 
       <form id="vibe-form">
-        <!-- your 6 question-blocks… -->
+        <!-- your 6 question-blocks (T, H, R, I, V, E) go here exactly as before -->
+        <!-- …all of those <fieldset data-code="T">… etc. … -->
       </form>
 
       <!-- Feedback Widget -->
       <div id="feedback-widget">
-        <!-- …widget markup & styles… -->
+        <div id="feedbackForm">
+          <div class="recommend-container">
+            <label for="stars"><b>How much would you hype Ma'am/Sir to a friend?</b></label>
+            <select id="stars" name="hypeLevel" required>
+              <option value="" disabled selected>Choose rating</option>
+              <option value="4">⭐⭐⭐⭐</option>
+              <option value="3">⭐⭐⭐</option>
+              <option value="2">⭐⭐</option>
+              <option value="1">⭐</option>
+            </select>
+          </div>
+          <div class="submit-row">
+            <button type="button" class="back" onclick="goTo('page-campus')">Back</button>
+            <button type="button" id="feedbackSubmitBtn">Submit</button>
+          </div>
+        </div>
+        <div class="thanks-msg">🌱 You’re helping your teacher help you thrive. Salamat! 🌱</div>
       </div>
     </section>
 
@@ -246,13 +281,96 @@
     </section>
   </div> <!-- end .layout -->
 
+  <!-- ── CORE APP LOGIC (navigation, campus→teacher, language, emoji capture, form hook) ── -->
   <script>
-    // …your existing navigation, campus→teacher, emoji capture, saveVibeCheck handler…
+    function goTo(id) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      if (id === 'page-teacher') showTeachers();
+      if (id === 'page-questions') {
+        document.querySelector('#page-questions .thanks-msg').style.display = 'none';
+        document.querySelectorAll('.emoji-btn.selected').forEach(b => b.classList.remove('selected'));
+      }
+      if (id === 'page-leaderboard' && typeof renderLeaderboard === 'function') {
+        renderLeaderboard();
+      }
+    }
+    document.getElementById('splashBtn').onclick = () => goTo('page-campus');
+    function scrollToCampus() {
+      document.getElementById('campusCircles').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Campus → Teacher
+    document.querySelectorAll('.campus-thumb').forEach(el => {
+      el.onclick = () => {
+        document.querySelectorAll('.campus-thumb').forEach(x => x.classList.remove('selected'));
+        el.classList.add('selected');
+        window.selectedCampus = el.dataset.campus;
+        goTo('page-teacher');
+      };
+    });
+
+    // Show Teachers
+    const teacherMap = {
+      Main: ["Reynaldo","Rona","Mar","Mercy","Nelia","Ishtin","Noelyn","Fendie","Sheilou","Robin","Johny","Fae","Lalaine","Lovely","Jerome","Joshua","Clarence","Eco"],
+      South: ["Jayhard","Edwin","Lyka","Henry","Elsie"],
+      "San Jose": ["Dawn","Cristine","Beverly","Philip","Bryan","Yves"]
+    };
+    const teacherPhotos = Object.fromEntries(
+      Object.entries(teacherMap).flatMap(([campus,list]) =>
+        list.map(name => [
+          name,
+          `https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/${encodeURIComponent(name)}.png`
+        ])
+      )
+    );
+    function showTeachers() {
+      const grid = document.getElementById('teacher-list');
+      grid.innerHTML = '';
+      teacherMap[window.selectedCampus].forEach(name => {
+        const btn = document.createElement('button');
+        btn.onclick = () => { window.selectedTeacher = name; goTo('page-questions'); };
+        btn.innerHTML = `<img src="${teacherPhotos[name]}" alt="${name}"/><div>${name}</div>`;
+        grid.appendChild(btn);
+      });
+    }
+
+    // Language toggle
+    document.getElementById('langSelect').addEventListener('change', e => {
+      document.querySelectorAll('.question').forEach(el => {
+        el.textContent = el.dataset[e.target.value];
+      });
+    });
+    document.getElementById('langSelect').dispatchEvent(new Event('change'));
+
+    // Emoji capture
+    const answers = {};
+    document.querySelectorAll('.emoji-row').forEach(row => {
+      row.addEventListener('click', e => {
+        if (!e.target.matches('.emoji-btn')) return;
+        row.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
+        e.target.classList.add('selected');
+        const code = row.closest('.question-block').dataset.code;
+        answers[code] = parseInt(e.target.dataset.rating, 10);
+      });
+    });
+
+    // Hook vibe-form submit
+    document.getElementById('vibe-form').addEventListener('submit', e => {
+      e.preventDefault();
+      if (Object.keys(answers).length < 6) {
+        alert('❗ Please tap an emoji for all six questions before submitting.');
+        return;
+      }
+      saveVibeCheck();
+      document.querySelector('#page-questions .thanks-msg').style.display = 'block';
+    });
   </script>
 
+  <!-- ── FIRESTORE + CYCLE-AWARE LEADERBOARD ─────────────────────────── -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-    import { getAnalytics }  from "https://www.gstatic.com/firebasejs/11.10.0/firebase-analytics.js";
+    import { initializeApp }                           from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getAnalytics }                            from "https://www.gstatic.com/firebasejs/11.10.0/firebase-analytics.js";
     import {
       getFirestore,
       collection,
@@ -264,7 +382,7 @@
       where
     } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
-    // Init Firebase
+    // Your Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyDd6uaoLk-6BDL7b4NggCYQz5NErUzFFWk",
       authDomain: "ithriveincas.firebaseapp.com",
@@ -274,31 +392,29 @@
       appId: "1:873460211632:web:015b40f2e4f08829458075",
       measurementId: "G-8QMJE6H7H2"
     };
+
+    // Init Firebase & Firestore
     const app = initializeApp(firebaseConfig);
     getAnalytics(app);
-    const db = getFirestore(app);
+    const db  = getFirestore(app);
 
-    // Save (anonymous) vibe-check
+    // Anonymous save
     window.saveVibeCheck = async function() {
-      const scores = Object.values(answers);
-      const avgScore = scores.reduce((a,b) => a+b, 0) / scores.length;
       await addDoc(collection(db, "vibeChecks"), {
         teacherName:   window.selectedTeacher,
         teacherCampus: window.selectedCampus,
-        answers,
-        avgScore,
+        answers,                      // {T:…,H:…,...}
         ts:            serverTimestamp()
       });
     };
 
-    // Dynamic cycle-based leaderboard
+    // Cycle-aware leaderboard
     async function renderLeaderboard() {
-      const now = new Date();
-      const initial       = new Date("2025-07-15T00:00:00+08:00");
-      const firstInterval = 27; // days to Aug 11
-      const cycleInterval = 14; // days thereafter
+      const now            = new Date();
+      const initial        = new Date("2025-07-15T00:00:00+08:00");
+      const firstInterval  = 27; // to Aug 11
+      const cycleInterval  = 14; // days thereafter
 
-      // build cycle dates
       const cycleDates = [initial];
       let cursor = new Date(initial);
       cursor.setDate(cursor.getDate() + firstInterval);
@@ -309,7 +425,6 @@
         cycleDates.push(new Date(cursor));
       }
 
-      // find last & next start
       let lastStart = initial, nextStart = cycleDates[1];
       for (let i = 0; i < cycleDates.length - 1; i++) {
         if (cycleDates[i] <= now && cycleDates[i+1] > now) {
@@ -319,42 +434,35 @@
         }
       }
 
-      // before collection begins
       if (now < initial) {
-        document.getElementById("leaderboard-list").innerHTML = `
-          <li>Leaderboard begins on ${initial.toLocaleDateString()}</li>
-        `;
+        document.getElementById("leaderboard-list").innerHTML =
+          `<li>Leaderboard begins on ${initial.toLocaleDateString()}</li>`;
         return;
       }
 
-      // query between lastStart & nextStart
-      const q = query(
+      const q    = query(
         collection(db, "vibeChecks"),
         where("ts", ">=", Timestamp.fromDate(lastStart)),
         where("ts", "<",  Timestamp.fromDate(nextStart))
       );
       const snap = await getDocs(q);
 
-      // aggregate 1★ & 4★
       const agg = {};
       snap.forEach(doc => {
         const { teacherName, teacherCampus, answers } = doc.data();
         const extremes = Object.values(answers).filter(v => v===1||v===4);
         if (!extremes.length) return;
-        const sum = extremes.reduce((s,v)=>s+v, 0), cnt = extremes.length;
+        const sum = extremes.reduce((s,v)=>s+v,0), cnt = extremes.length;
         if (!agg[teacherName]) agg[teacherName] = { sum:0, cnt:0, campus:teacherCampus };
         agg[teacherName].sum += sum;
         agg[teacherName].cnt += cnt;
       });
 
-      // sort & pick top 5
-      const arr = Object.entries(agg).map(([name,{sum,cnt,campus}])=>({
-        name, campus, avg: sum / cnt
-      }));
-      arr.sort((a,b)=>b.avg - a.avg);
-      const top5 = arr.slice(0,5);
+      const top5 = Object.entries(agg)
+        .map(([name,{sum,cnt,campus}]) => ({ name, campus, avg: sum/cnt }))
+        .sort((a,b)=>b.avg - a.avg)
+        .slice(0,5);
 
-      // render
       const ol = document.getElementById("leaderboard-list");
       ol.innerHTML = "";
       top5.forEach(({name,campus},i) => {
@@ -372,7 +480,6 @@
       });
     }
 
-    // initial + on-nav
     document.addEventListener("DOMContentLoaded", renderLeaderboard);
   </script>
 </body>
