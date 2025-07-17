@@ -363,29 +363,109 @@
         </div>
 
         <!-- Recommendation -->
-        <div class="recommend-container">
-        <label for="stars" id="recommendLabel">
-          <b>How much would you hype Ma'am/Sir to a friend?</b>
-        </label>
-        <select id="stars" required>
-          <option value="4">⭐⭐⭐⭐</option>
-          <option value="3">⭐⭐⭐</option>
-          <option value="2">⭐⭐</option>
-          <option value="1">⭐</option>
-        </select>
-        </div>
+        <div id="feedback-widget">
+  <style>
+    /* scoped to #feedback-widget so it won’t clash with your global CSS */
+    #feedback-widget .recommend-container {
+      margin-bottom: 1rem;
+    }
+    #feedback-widget label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+    #feedback-widget select {
+      width: 100%;
+      padding: 0.5rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 0.375rem;
+    }
 
-        <!-- Submit -->
-        <div class="submit-row">
-  <!-- make this a plain button and use your .back style -->
-  <button type="button" class="btn back" onclick="goTo('page-campus')">
-    Back
-  </button>
-  <button type="submit" class="submit">
-    Submit
-  </button>
+    #feedback-widget .submit-row {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+      margin-top: 1rem;
+    }
+    #feedback-widget .submit-row button {
+      flex: none;               /* don’t stretch */
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 0.375rem;
+      cursor: pointer;
+      border: 2px solid transparent;
+      background: #2f855a;      /* green */
+      color: white;
+    }
+    #feedback-widget .submit-row button.back {
+      background: white;
+      color: #2d3748;           /* dark navy-ish */
+      border-color: #2d3748;
+    }
+
+    /* hidden until after submit */
+    #feedback-widget .thanks-msg {
+      display: none;
+      margin-top: 1.5rem;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.1rem;
+      background: #f0fff4;
+      border: 1px solid #c6f6d5;
+      border-radius: 0.375rem;
+    }
+  </style>
+
+  <form id="feedbackForm">
+    <div class="recommend-container">
+      <label for="stars">
+        How much would you hype Ma'am/Sir to a friend?
+      </label>
+      <select id="stars" name="hypeLevel" required>
+        <option value="" disabled selected>Choose rating</option>
+        <option value="4">⭐⭐⭐⭐</option>
+        <option value="3">⭐⭐⭐</option>
+        <option value="2">⭐⭐</option>
+        <option value="1">⭐</option>
+      </select>
+    </div>
+
+    <div class="submit-row">
+      <button type="button" class="back" onclick="goTo('page-campus')">
+        ← Back
+      </button>
+      <button type="submit">
+        Submit
+      </button>
+    </div>
+  </form>
+
+  <div class="thanks-msg">
+    🌱 You’re helping your teacher help you thrive. Salamat! 🌱
+  </div>
+
+  <script>
+    // your existing navigation function
+    function goTo(pageId) {
+      // hide everything, show the one you want…
+      document.querySelectorAll('section, #feedback-widget').forEach(el => el.style.display = 'none');
+      document.getElementById(pageId).style.display = 'block';
+    }
+
+    // on submit: hide form, show thanks-msg
+    document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      this.style.display = 'none';
+      const thanks = document.querySelector('#feedback-widget .thanks-msg');
+      thanks.style.display = 'block';
+      thanks.scrollIntoView({ behavior: 'smooth' });
+      // ← here you can also send your AJAX / fetch if needed
+    });
+  </script>
 </div>
-     </form>
+
+     
 
       <div class="thanks-msg">
         🌱 You’re helping your teacher help you thrive. Salamat! 🌱
