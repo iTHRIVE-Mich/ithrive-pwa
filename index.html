@@ -189,15 +189,14 @@
       </div>
     </header>
 
-    <!-- GLOBAL NAV BAR -->
-    <div id="main-nav" style="display:flex; gap:1rem; padding:1rem; border-bottom:1px solid #ddd;">
-      <button type="button" onclick="goTo('page-campus')">Campus</button>
-      <button type="button" onclick="goTo('page-questions')">Feedback</button>
-      <button type="button" onclick="goTo('page-leaderboard')">Leaderboard</button>
-    </div>
+  <!-- GLOBAL NAV BAR (Leaderboard only) -->
+<div id="main-nav" style="display:flex; gap:1rem; padding:1rem; border-bottom:1px solid #ddd;">
+  <button type="button" onclick="goTo('page-leaderboard')">Leaderboard</button>
+</div>
+
 
     <!-- PAGE 1: SPLASH -->
-    <section id="page-splash" class="page active">
+    <section id="page-splash" class="page">
       <div class="splash-container">
         <img
           src="https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/cover.png"
@@ -450,10 +449,11 @@
       </script>
 
       <!-- LEADERBOARD PAGE -->
-      <section id="page-leaderboard" class="page" style="display:none;">
-        <h2>🌟 Leaderboard: Top 5 Teachers</h2>
-        <ol id="leaderboard-list"></ol>
-      </section>
+     <section id="page-leaderboard" class="page active">
+  <h2>🌟 Leaderboard: Top 5 Teachers</h2>
+  <ol id="leaderboard-list"></ol>
+</section>
+
 
     </div> <!-- end of .layout -->
 
