@@ -488,6 +488,12 @@
         return;
       }
 
+      // Ensure exactly 6 answers (T,H,R,I,V,E)
+      if (Object.keys(answers).length < 6) {
+        alert('Please tap an emoji for all six questions before submitting.');
+        return;
+      }
+
       // Hide the “form” and show the thank-you
       formDiv.style.display   = 'none';
       thanks.style.display    = 'block';
