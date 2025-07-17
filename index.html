@@ -182,22 +182,99 @@
 
   </style>
 
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<!-- Firebase (modular) & Firestore setup -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+  import { getAnalytics }    from "https://www.gstatic.com/firebasejs/11.10.0/firebase-analytics.js";
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    serverTimestamp,
+    getDocs,
+    query,
+    where,
+    Timestamp
+  } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
-<script>
+  // ── Your Firebase config ──
   const firebaseConfig = {
-    apiKey: "AIzaSyDd6uaoLk-6BDL7b4NggCYz5NErUzFFWk",
+    apiKey: "AIzaSyDd6uaoLk-6BDL7b4NggCYQz5NErUzFFWk",
     authDomain: "ithriveincas.firebaseapp.com",
     projectId: "ithriveincas",
     storageBucket: "ithriveincas.appspot.com",
-    messagingSenderId: "447009222763",
-    appId: "1:447009222763:web:1ddf9f1b08b0bde27fcf5f"
+    messagingSenderId: "873460211632",
+    appId: "1:873460211632:web:015b40f2e4f08829458075",
+    measurementId: "G-8QMJE6H7H2"
   };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
+
+  // ── Initialize Firebase & services ──
+  const app       = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const db        = getFirestore(app);
+
+  // ── Save one Vibe Check ──
+  window.saveVibeCheck = async function(teacherName, teacherCampus, answers) {
+    const avgScore = Object.values(answers).reduce((a,b) => a+b, 0) / Object.values(answers).length;
+    await addDoc(collection(db, "vibeChecks"), {
+      teacherName,
+      teacherCampus,
+      answers,
+      avgScore,
+      ts: serverTimestamp()
+    });
+  };
+
+  // ── Render Top-5 Leaderboard ──
+  async function renderLeaderboard() {
+    const start = new Date("2025-07-21T00:00:00");
+    const end   = new Date(start);
+    end.setDate(end.getDate() + 14);
+    if (Date.now() < start.getTime()) {
+      document.getElementById("leaderboard-list").innerHTML =
+        `<li>Leaderboard begins on July 21, 2025.</li>`;
+      return;
+    }
+    const q = query(
+      collection(db, "vibeChecks"),
+      where("ts", ">=", Timestamp.fromDate(start)),
+      where("ts", "<",  Timestamp.fromDate(end))
+    );
+    const snap = await getDocs(q);
+    const agg = {};
+    snap.forEach(doc => {
+      const { teacherName, teacherCampus, answers } = doc.data();
+      const extreme = Object.values(answers).filter(v=>v===1||v===4);
+      if (!extreme.length) return;
+      const sum = extreme.reduce((s,v)=>s+v, 0),
+            cnt = extreme.length;
+      (agg[teacherName] ??= { sum:0, cnt:0, campus:teacherCampus });
+      agg[teacherName].sum += sum;
+      agg[teacherName].cnt += cnt;
+    });
+    const top5 = Object.entries(agg)
+      .map(([name,{sum,cnt,campus}]) => ({ name, campus, avg: sum/cnt }))
+      .sort((a,b)=>b.avg-a.avg)
+      .slice(0,5);
+    const ol = document.getElementById("leaderboard-list");
+    ol.innerHTML = "";
+    top5.forEach(({name,campus},i) => {
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <img src="https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/${encodeURIComponent(name)}.png"
+             class="leader-img" alt="${name}">
+        <div class="leader-info">
+          <div class="leader-name">${name}</div>
+          <div class="leader-campus">${campus}</div>
+        </div>
+        <div class="leader-rank">${i+1}</div>`;
+      ol.appendChild(li);
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", renderLeaderboard);
 </script>
+
 
 </head>
 <body>
@@ -692,34 +769,27 @@
     </script>
 
 <script>
+ <script>
   document.getElementById("feedbackSubmitBtn").addEventListener("click", async () => {
     const hype = parseInt(document.getElementById("stars").value, 10);
     if (!hype || Object.keys(answers).length < 6) {
       alert("Please complete all questions and select a star rating.");
       return;
     }
-
-    const scores = Object.values(answers);
-    const avgScore = scores.reduce((a, b) => a + b, 0) / scores.length;
-
-    try {
-      await db.collection("vibeChecks").add({
-        teacherName:   window.selectedTeacher,
-        teacherCampus: window.selectedCampus,
-        answers:       answers,
-        avgScore:      avgScore,
-        hypeRating:    hype,
-        timestamp:     firebase.firestore.FieldValue.serverTimestamp()
-      });
-
-      document.querySelector('#page-questions .thanks-msg').style.display = 'block';
-      document.getElementById("feedbackForm").style.display = "none";
-    } catch (e) {
-      console.error("Error submitting: ", e);
-      alert("Error submitting feedback. Please try again.");
-    }
+    // First save the 6-question “vibe”…
+    await saveVibeCheck(window.selectedTeacher, window.selectedCampus, answers);
+    // Then save the “hype” rating as a separate doc
+    await addDoc(collection(db, "vibeChecks"), {
+      teacherName:   window.selectedTeacher,
+      teacherCampus: window.selectedCampus,
+      hypeRating:    hype,
+      ts:             serverTimestamp()
+    });
+    document.querySelector('#page-questions .thanks-msg').style.display = 'block';
+    document.getElementById("feedbackForm").style.display = "none";
   });
 </script>
+
 </body>
 </html>
 
