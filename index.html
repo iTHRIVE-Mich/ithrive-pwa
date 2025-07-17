@@ -415,6 +415,14 @@
       border: 1px solid #c6f6d5;
       border-radius: 0.375rem;
     }
+#feedback-widget,
+#feedback-widget .submit-row,
+#feedback-widget .submit-row button {
+  position: relative !important;
+  z-index: 9999 !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
   </style>
 
   <form id="feedbackForm">
@@ -433,7 +441,7 @@
 
     <div class="submit-row">
       <button type="button" class="back" onclick="goTo('page-campus')">
-        ← Back
+        Back
       </button>
       <button type="submit">
         Submit
@@ -464,16 +472,6 @@
     });
   </script>
 </div>
-
-     
-
-      <div class="thanks-msg">
-        🌱 You’re helping your teacher help you thrive. Salamat! 🌱
-      </div>
-    </section>
-
-  </div>
-
   <script>
     // NAV & RESET
     function goTo(id) {
