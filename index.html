@@ -53,77 +53,31 @@
     .campus-thumb.selected { box-shadow: 0 0 0 4px #196f38; transform: scale(1.05); }
     .campus-thumb img { width:100px; height:100px; border-radius:50%; object-fit:cover; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
     .campus-thumb span { display:block; margin-top:10px; font-weight:600; }
-}
-      /* ==== CAMPUS EMOJIS ==== */
+
+    /* ==== CAMPUS EMOJIS ==== */
     #page-campus .emoji-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
       gap: 12px;
       margin-top: 20px;
     }
-    .emoji-tile {
+    #page-campus .emoji-tile {
       border-radius: 12px;
-      padding: 20px;
+      padding: 10px;       /* snug padding */
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 100px;
+      min-height: auto;    /* let height adapt */
       box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
-    .tile-1 { background: #2E67A7; }
-    .tile-2 { background: #FFD400; }
-    .tile-3 { background: #428A33; }
-    .tile-4 { background: #737273; }
-    .emoji { font-size: 3rem; line-height: 1; }
-
-
-#page-campus .emoji-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: 12px;
-  margin-top: 20px;
-}
-#page-campus .emoji-tile {
-  border-radius: 12px;
-  padding: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-}
-#page-campus .tile-1 { background: #2E67A7; }
-#page-campus .tile-2 { background: #FFD400; }
-#page-campus .tile-3 { background: #428A33; }
-#page-campus .tile-4 { background: #737273; }
-#page-campus .emoji {
-  font-size: 3rem;
-  line-height: 1;
-}
-#page-campus .emoji-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: 12px;
-  margin-top: 20px;
-}
-
-#page-campus .emoji-tile {
-  border-radius: 12px;
-  padding: 10px;       /* snug padding */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: auto;    /* let height adapt */
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-}
-
-#page-campus .emoji {
-  font-size: 6rem;     /* big but not overlapping */
-  line-height: 1;
-}
-
-
-
+    #page-campus .tile-1 { background: #2E67A7; }
+    #page-campus .tile-2 { background: #FFD400; }
+    #page-campus .tile-3 { background: #428A33; }
+    #page-campus .tile-4 { background: #737273; }
+    #page-campus .emoji {
+      font-size: 6rem;     /* big but not overlapping */
+      line-height: 1;
+    }
 
     /* ==== TEACHER SELECT (Page 3) ==== */
     .btn.back {
@@ -176,6 +130,41 @@
       .submit-row { flex-direction:column; }
       .submit-row button { width:100%; }
     }
+
+    /* —— LEADERBOARD STYLES —— */
+    #leaderboard-list {
+      list-style: none;
+      padding: 0;
+      margin: 1rem 0;
+    }
+    #leaderboard-list li {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    #leaderboard-list img.leader-img {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    #leaderboard-list .leader-info {
+      display: flex;
+      flex-direction: column;
+    }
+    #leaderboard-list .leader-name {
+      font-weight: bold;
+    }
+    #leaderboard-list .leader-campus {
+      font-size: 0.9rem;
+      color: #555;
+    }
+    #leaderboard-list .leader-rank {
+      margin-left: auto;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -200,6 +189,13 @@
       </div>
     </header>
 
+    <!-- GLOBAL NAV BAR -->
+    <div id="main-nav" style="display:flex; gap:1rem; padding:1rem; border-bottom:1px solid #ddd;">
+      <button type="button" onclick="goTo('page-campus')">Campus</button>
+      <button type="button" onclick="goTo('page-questions')">Feedback</button>
+      <button type="button" onclick="goTo('page-leaderboard')">Leaderboard</button>
+    </div>
+
     <!-- PAGE 1: SPLASH -->
     <section id="page-splash" class="page active">
       <div class="splash-container">
@@ -216,7 +212,6 @@
       <button class="campus-header-btn" type="button" onclick="scrollToCampus()">
         Select Campus
       </button>
-     
       <div id="campusCircles" class="campus-circles">
         <div class="campus-thumb" data-campus="Main">
           <img src="https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/Main.png" alt="Main"/>
@@ -231,20 +226,17 @@
           <span>San Jose</span>
         </div>
       </div>
-    <!-- Emoji tiles under campuses -->
-    <div class="emoji-grid">
-    <div class="emoji-tile tile-1"><div class="emoji">🔥</div></div>
-    <div class="emoji-tile tile-2"><div class="emoji">😎</div></div>
-    <div class="emoji-tile tile-3"><div class="emoji">😐</div></div>
-    <div class="emoji-tile tile-4"><div class="emoji">🫠</div></div>
-  </div>
-
-
+      <div class="emoji-grid">
+        <div class="emoji-tile tile-1"><div class="emoji">🔥</div></div>
+        <div class="emoji-tile tile-2"><div class="emoji">😎</div></div>
+        <div class="emoji-tile tile-3"><div class="emoji">😐</div></div>
+        <div class="emoji-tile tile-4"><div class="emoji">🫠</div></div>
+      </div>
     </section>
 
     <!-- PAGE 3: TEACHER SELECT -->
     <section id="page-teacher" class="page">
-     <button class="btn submit" onclick="goTo('page-campus')">← Back</button>
+      <button class="btn submit" onclick="goTo('page-campus')">← Back</button>
       <h2>Ready. Tap. Thrive.</h2>
       <div id="teacher-list" class="grid"></div>
     </section>
@@ -361,258 +353,311 @@
             <button type="button" class="emoji-btn" data-rating="1">🫠</button>
           </div>
         </div>
+      </form>
 
-        <!-- Recommendation -->
-    <!-- Feedback Widget Start -->
-<div id="feedback-widget">
-  <style>
-    /* —— CORE STYLES —— */
-    #feedback-widget .recommend-container {
-      margin-bottom: 1rem;
-    }
-    #feedback-widget label {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 0.5rem;
-    }
-    #feedback-widget select {
-      width: 100%;
-      padding: 0.5rem;
-      font-size: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 0.375rem;
-    }
-    #feedback-widget .submit-row {
-      display: flex;
-      gap: 1rem;
-      justify-content: flex-end;
-      margin-top: 1rem;
-    }
-    #feedback-widget .submit-row button {
-      flex: none;
-      padding: 0.75rem 1.5rem;
-      font-size: 1rem;
-      border-radius: 0.375rem;
-      border: 2px solid transparent;
-      background: #2f855a;
-      color: white;
-      cursor: pointer;
-    }
-    #feedback-widget .submit-row button.back {
-      background: white;
-      color: #2d3748;
-      border-color: #2d3748;
-    }
-    #feedback-widget .thanks-msg {
-      display: none;
-      margin-top: 1.5rem;
-      padding: 1rem;
-      text-align: center;
-      font-size: 1.1rem;
-      background: #f0fff4;
-      border: 1px solid #c6f6d5;
-      border-radius: 0.375rem;
-    }
+      <!-- Feedback Widget Start -->
+      <div id="feedback-widget">
+        <style>
+          /* —— CORE STYLES —— */
+          #feedback-widget .recommend-container { margin-bottom: 1rem; }
+          #feedback-widget label { display: block; font-weight: bold; margin-bottom: 0.5rem; }
+          #feedback-widget select {
+            width: 100%; padding: 0.5rem; font-size: 1rem;
+            border: 1px solid #ccc; border-radius: 0.375rem;
+          }
+          #feedback-widget .submit-row {
+            display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1rem;
+          }
+          #feedback-widget .submit-row button {
+            flex: none; padding: 0.75rem 1.5rem; font-size: 1rem;
+            border-radius: 0.375rem; border: 2px solid transparent;
+            background: #2f855a; color: white; cursor: pointer;
+          }
+          #feedback-widget .submit-row button.back {
+            background: white; color: #2d3748; border-color: #2d3748;
+          }
+          #feedback-widget .thanks-msg {
+            display: none; margin-top: 1.5rem; padding: 1rem;
+            text-align: center; font-size: 1.1rem;
+            background: #f0fff4; border: 1px solid #c6f6d5; border-radius: 0.375rem;
+          }
 
-    /* —— FORCE CLICKABILITY —— */
-    #feedback-widget,
-    #feedback-widget .submit-row,
-    #feedback-widget .submit-row button {
-      position: relative !important;
-      z-index: 9999   !important;
-      pointer-events: auto !important;
-      cursor: pointer  !important;
-    }
-  </style>
+          /* —— FORCE CLICKABILITY —— */
+          #feedback-widget,
+          #feedback-widget .submit-row,
+          #feedback-widget .submit-row button {
+            position: relative !important;
+            z-index: 9999   !important;
+            pointer-events: auto !important;
+            cursor: pointer  !important;
+          }
+        </style>
 
-  <!-- Changed <form> to <div> to avoid nested-form issues -->
-  <div id="feedbackForm">
-    <div class="recommend-container">
-      <label for="stars">
-        <b>How much would you hype Ma'am/Sir to a friend?</b>
-      </label>
-      <select id="stars" name="hypeLevel" required>
-        <option value="" disabled selected>Choose rating</option>
-        <option value="4">⭐⭐⭐⭐</option>
-        <option value="3">⭐⭐⭐</option>
-        <option value="2">⭐⭐</option>
-        <option value="1">⭐</option>
-      </select>
-    </div>
+        <div id="feedbackForm">
+          <div class="recommend-container">
+            <label for="stars">
+              <b>How much would you hype Ma'am/Sir to a friend?</b>
+            </label>
+            <select id="stars" name="hypeLevel" required>
+              <option value="" disabled selected>Choose rating</option>
+              <option value="4">⭐⭐⭐⭐</option>
+              <option value="3">⭐⭐⭐</option>
+              <option value="2">⭐⭐</option>
+              <option value="1">⭐</option>
+            </select>
+          </div>
+          <div class="submit-row">
+            <button type="button" class="back" onclick="goTo('page-campus')">
+              ← Back
+            </button>
+            <button type="button" id="feedbackSubmitBtn">
+              Submit
+            </button>
+          </div>
+        </div>
+        <div class="thanks-msg">
+          🌱 You’re helping your teacher help you thrive. Salamat! 🌱
+        </div>
+      </div>
+      <!-- Feedback Widget End -->
 
-    <div class="submit-row">
-      <button type="button" class="back" onclick="goTo('page-campus')">
-        ← Back
-      </button>
-      <!-- Plain button with its own ID -->
-      <button type="button" id="feedbackSubmitBtn">
-        Submit
-      </button>
-    </div>
-  </div>
+      <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          const formDiv   = document.getElementById('feedbackForm');
+          const submitBtn = document.getElementById('feedbackSubmitBtn');
+          const thanks    = document.querySelector('#feedback-widget .thanks-msg');
+          const selectEl  = document.getElementById('stars');
 
-  <div class="thanks-msg">
-    🌱 You’re helping your teacher help you thrive. Salamat! 🌱
-  </div>
-</div>
-<!-- Feedback Widget End -->
+          // hide thank-you initially
+          thanks.style.display = 'none';
 
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    console.log('💡 Feedback widget script loaded');
+          submitBtn.addEventListener('click', () => {
+            // validate rating
+            if (!selectEl.value) {
+              alert('Please select a rating before submitting.');
+              return;
+            }
+            // ensure emoji form complete
+            if (Object.keys(answers).length < 6) {
+              alert('Please tap an emoji for all six questions before submitting.');
+              return;
+            }
+            formDiv.style.display = 'none';
+            thanks.style.display  = 'block';
+            thanks.scrollIntoView({ behavior: 'smooth' });
+          });
+        });
+      </script>
 
-    const formDiv   = document.getElementById('feedbackForm');
-    const submitBtn = document.getElementById('feedbackSubmitBtn');
-    const thanks    = document.querySelector('#feedback-widget .thanks-msg');
-    const selectEl  = document.getElementById('stars');
+      <!-- LEADERBOARD PAGE -->
+      <section id="page-leaderboard" class="page" style="display:none;">
+        <h2>🌟 Leaderboard: Top 5 Teachers</h2>
+        <ol id="leaderboard-list"></ol>
+      </section>
 
-    if (!submitBtn) {
-      return console.error('❌ feedbackSubmitBtn not found');
-    }
-    if (!formDiv) {
-      return console.error('❌ feedbackForm container not found');
-    }
-    if (!thanks) {
-      return console.error('❌ .thanks-msg not found');
-    }
+    </div> <!-- end of .layout -->
 
-    // Hide the thank-you at first
-    thanks.style.display = 'none';
-
-    submitBtn.addEventListener('click', () => {
-      console.log('🔨 Submit button clicked');
-
-      // Simple validation: ensure they picked a rating
-      if (!selectEl.value) {
-        alert('Please select a rating before submitting.');
-        return;
+    <script>
+      // NAV & RESET
+      function goTo(id) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        if (id === 'page-teacher') showTeachers();
+        if (id === 'page-questions') {
+          document.querySelector('#page-questions .thanks-msg').style.display = 'none';
+          document.querySelectorAll('.emoji-btn.selected').forEach(b => b.classList.remove('selected'));
+        }
+        if (id === 'page-leaderboard' && typeof renderLeaderboard === 'function') {
+          renderLeaderboard();
+        }
+      }
+      document.getElementById('splashBtn').onclick = () => goTo('page-campus');
+      function scrollToCampus() {
+        document.getElementById('campusCircles').scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
 
-      // Ensure exactly 6 answers (T,H,R,I,V,E)
-      if (Object.keys(answers).length < 6) {
-        alert('Please tap an emoji for all six questions before submitting.');
-        return;
-      }
+      // CAMPUS → TEACHER
+      document.querySelectorAll('.campus-thumb').forEach(el => {
+        el.onclick = () => {
+          document.querySelectorAll('.campus-thumb').forEach(x => x.classList.remove('selected'));
+          el.classList.add('selected');
+          window.selectedCampus = el.dataset.campus;
+          goTo('page-teacher');
+        };
+      });
 
-      // Hide the “form” and show the thank-you
-      formDiv.style.display   = 'none';
-      thanks.style.display    = 'block';
-      thanks.scrollIntoView({ behavior: 'smooth' });
-
-      // ← OPTIONAL: trigger your AJAX/fetch here
-    });
-  });
-</script>
-
-</div>
-  <script>
-    // NAV & RESET
-    function goTo(id) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-      if (id === 'page-teacher') showTeachers();
-      if (id === 'page-questions') {
-        document.querySelector('.thanks-msg').style.display = 'none';
-        // clear any previous emoji selections:
-        document.querySelectorAll('.emoji-btn.selected').forEach(b => b.classList.remove('selected'));
-      }
-    }
-    document.getElementById('splashBtn').onclick = () => goTo('page-campus');
-    function scrollToCampus() {
-      document.getElementById('campusCircles')
-        .scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-
-    // CAMPUS → TEACHER
-    document.querySelectorAll('.campus-thumb').forEach(el => {
-      el.onclick = () => {
-        document.querySelectorAll('.campus-thumb').forEach(x => x.classList.remove('selected'));
-        el.classList.add('selected');
-        window.selectedCampus = el.dataset.campus;
-        goTo('page-teacher');
+      // SHOW TEACHERS
+      const teacherMap = {
+        Main: ["Reynaldo","Rona","Mar","Mercy","Nelia","Ishtin","Noelyn","Fendie","Sheilou","Robin","Johny","Fae","Lalaine","Lovely","Jerome","Joshua","Clarence","Eco"],
+        South: ["Jayhard","Edwin","Lyka","Henry","Elsie"],
+        "San Jose": ["Dawn","Cristine","Beverly","Philip","Bryan","Yves"]
       };
-    });
+      const teacherPhotos = Object.fromEntries(
+        Object.entries(teacherMap).flatMap(([campus,list]) =>
+          list.map(name => [name, `https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/${encodeURIComponent(name)}.png`])
+        )
+      );
+      function showTeachers() {
+        const grid = document.getElementById('teacher-list');
+        grid.innerHTML = '';
+        teacherMap[window.selectedCampus].forEach(name => {
+          const btn = document.createElement('button');
+          btn.onclick = () => { window.selectedTeacher = name; goTo('page-questions'); };
+          btn.innerHTML = `<img src="${teacherPhotos[name]}" alt="${name}"/><div>${name}</div>`;
+          grid.appendChild(btn);
+        });
+      }
 
-    // SHOW TEACHERS
-    const teacherMap = {
-      Main: ["Reynaldo","Rona","Mar","Mercy","Nelia","Ishtin","Noelyn","Fendie","Sheilou","Robin","Johny","Fae","Lalaine","Lovely","Jerome","Joshua","Clarence","Eco"],
-      South: ["Jayhard","Edwin","Lyka","Henry","Elsie"],
-      "San Jose": ["Dawn","Cristine","Beverly","Philip","Bryan","Yves"]
-    };
-    const teacherPhotos = Object.fromEntries(
-      Object.entries(teacherMap).flatMap(([campus,list]) =>
-        list.map(name => [name, `https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/${name}.png`])
-      )
-    );
-    function showTeachers() {
-      const grid = document.getElementById('teacher-list');
-      grid.innerHTML = '';
-      teacherMap[window.selectedCampus].forEach(name => {
-        const btn = document.createElement('button');
-        btn.onclick = () => goTo('page-questions');
-        btn.innerHTML = `<img src="${teacherPhotos[name]}" alt="${name}"/><div>${name}</div>`;
-        grid.appendChild(btn);
+      // LANGUAGE SWAP
+      document.getElementById('langSelect').addEventListener('change', e => {
+        document.querySelectorAll('.question').forEach(el => {
+          el.textContent = el.dataset[e.target.value];
+        });
       });
-    }
+      document.getElementById('langSelect').dispatchEvent(new Event('change'));
 
-    // LANGUAGE SWAP
-    document.getElementById('langSelect').addEventListener('change', e => {
-      document.querySelectorAll('.question').forEach(el => {
-        el.textContent = el.dataset[e.target.value];
+      // CAPTURE RATINGS
+      const answers = {};
+      document.querySelectorAll('.emoji-row').forEach(row => {
+        row.addEventListener('click', e => {
+          if (!e.target.matches('.emoji-btn')) return;
+          row.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
+          e.target.classList.add('selected');
+          const code = row.closest('.question-block').dataset.code;
+          answers[code] = parseInt(e.target.dataset.rating, 10);
+        });
       });
-    });
-    // initialize question texts
-    document.getElementById('langSelect').dispatchEvent(new Event('change'));
 
-    // CAPTURE RATINGS
-    const answers = {};
-    document.querySelectorAll('.emoji-row').forEach(row => {
-      row.addEventListener('click', e => {
-        if (!e.target.matches('.emoji-btn')) return;
-        row.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
-        e.target.classList.add('selected');
-        const code = row.closest('.question-block').dataset.code;
-        answers[code] = parseInt(e.target.dataset.rating, 10);
+      // SUBMIT VIBE FORM
+      document.getElementById('vibe-form').addEventListener('submit', e => {
+        e.preventDefault();
+        if (Object.keys(answers).length < 6) {
+          alert('Please tap an emoji for all six questions before submitting.');
+          return;
+        }
+        saveVibeCheck();
+        document.querySelector('#page-questions .thanks-msg').style.display = 'block';
       });
-    });
+    </script>
 
-    // SUBMIT VIBE FORM
-    document.getElementById('vibe-form').addEventListener('submit', e => {
-  e.preventDefault();
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+      import { getAnalytics }  from "https://www.gstatic.com/firebasejs/11.10.0/firebase-analytics.js";
+      import {
+        getFirestore,
+        collection,
+        addDoc,
+        getDocs,
+        serverTimestamp,
+        Timestamp,
+        query,
+        where
+      } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
-  // Check we have exactly 6 answers (T,H,R,I,V,E)
-  if (Object.keys(answers).length < 6) {
-    alert('Please tap an emoji for all six questions before submitting.');
-    return;
-  }
+      // 1) Init Firebase
+      const firebaseConfig = {
+        apiKey: "AIzaSyDd6uaoLk-6BDL7b4NggCYz5NErUzFFWk",
+        authDomain: "ithriveincas.firebaseapp.com",
+        projectId: "ithriveincas",
+        storageBucket: "ithriveincas.appspot.com",
+        messagingSenderId: "873460211632",
+        appId: "1:873460211632:web:015b40f2e4f08829458075",
+        measurementId: "G-8QMJE6H7H2"
+      };
+      const app = initializeApp(firebaseConfig);
+      getAnalytics(app);
+      const db = getFirestore(app);
 
-  // everything’s good → record & thank
-  saveVibeCheck();
-  document.querySelector('.thanks-msg').style.display = 'block';
-});
-  </script>
-  <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+      // 2) Teacher → Photo & Campus
+      const teacherMap2 = {
+        Main:    ["Reynaldo","Rona","Mar","Mercy","Nelia","Ishtin","Noelyn","Fendie","Sheilou","Robin","Johny","Fae","Lalaine","Lovely","Jerome","Joshua","Clarence","Eco"],
+        South:   ["Jayhard","Edwin","Lyka","Henry","Elsie"],
+        "San Jose": ["Dawn","Cristine","Beverly","Philip","Bryan","Yves"]
+      };
+      const teacherPhotos2 = Object.fromEntries(
+        Object.entries(teacherMap2).flatMap(([campus,list]) =>
+          list.map(name => [
+            name,
+            `https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/${encodeURIComponent(name)}.png`
+          ])
+        )
+      );
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyDd6uaoLk-6BDL7b4NggCYQz5NErUzFFWk",
-    authDomain: "ithriveincas.firebaseapp.com",
-    projectId: "ithriveincas",
-    storageBucket: "ithriveincas.firebasestorage.app",
-    messagingSenderId: "873460211632",
-    appId: "1:873460211632:web:015b40f2e4f08829458075",
-    measurementId: "G-8QMJE6H7H2"
-  };
+      // 3) saveVibeCheck
+      window.saveVibeCheck = async function() {
+        const scores = Object.values(answers);
+        const avgScore = scores.reduce((a,b) => a+b, 0) / scores.length;
+        await addDoc(collection(db, "vibeChecks"), {
+          teacherName:   window.selectedTeacher,
+          teacherCampus: window.selectedCampus,
+          answers,
+          avgScore,
+          ts:            serverTimestamp()
+        });
+      };
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
+      // 4) Render Top 5 for July 21–Aug 4 window
+      async function renderLeaderboard() {
+        const startDate = new Date("2025-07-21T00:00:00");
+        const endDate   = new Date(startDate);
+        endDate.setDate(endDate.getDate() + 14);
+
+        // Before start...
+        if (Date.now() < startDate.getTime()) {
+          document.getElementById("leaderboard-list").innerHTML = `
+            <li>Leaderboard begins on July 21, 2025.</li>
+          `;
+          return;
+        }
+
+        // Query 14-day window
+        const q = query(
+          collection(db, "vibeChecks"),
+          where("ts", ">=", Timestamp.fromDate(startDate)),
+          where("ts", "<",  Timestamp.fromDate(endDate))
+        );
+        const snap = await getDocs(q);
+
+        // Aggregate 1★ & 4★ only
+        const agg = {};
+        snap.forEach(doc => {
+          const { teacherName, teacherCampus, answers } = doc.data();
+          const extreme = Object.values(answers).filter(v => v===1||v===4);
+          if (!extreme.length) return;
+          const sum = extreme.reduce((s,v)=>s+v, 0);
+          const cnt = extreme.length;
+          if (!agg[teacherName]) {
+            agg[teacherName] = { sum:0, cnt:0, campus:teacherCampus };
+          }
+          agg[teacherName].sum += sum;
+          agg[teacherName].cnt += cnt;
+        });
+
+        // Sort & pick top 5
+        const arr = Object.entries(agg).map(([name,{sum,cnt,campus}])=>({
+          name, campus, avg: sum/cnt
+        }));
+        arr.sort((a,b)=>b.avg-a.avg);
+        const top5 = arr.slice(0,5);
+
+        // Render
+        const ol = document.getElementById("leaderboard-list");
+        ol.innerHTML = "";
+        top5.forEach(({name,campus},i) => {
+          const li = document.createElement("li");
+          li.innerHTML = `
+            <img src="${teacherPhotos2[name]}" alt="${name}" class="leader-img"/>
+            <div class="leader-info">
+              <div class="leader-name">${name}</div>
+              <div class="leader-campus">${campus}</div>
+            </div>
+            <div class="leader-rank">${i+1}</div>
+          `;
+          ol.appendChild(li);
+        });
+      }
+
+      document.addEventListener("DOMContentLoaded", renderLeaderboard);
+    </script>
 </body>
 </html>
