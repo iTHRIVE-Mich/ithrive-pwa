@@ -85,7 +85,7 @@
     let teacherMap = {};
     async function loadTeachers() {
       const snap = await getDocs(collection(db, "vibeChecks"));
-      const map  = {};
+      const map = {};
       snap.docs.forEach(doc => {
         const { teacherName, teacherCampus } = doc.data();
         if (!teacherName || !teacherCampus) return;
@@ -97,8 +97,6 @@
       for (const campus in map) {
         teacherMap[campus] = Array.from(map[campus]).sort();
       }
-      // expose for debugging
-      window.teacherMap = teacherMap;
       // if campus already selected, show its teachers
       if (window.selectedCampus) showTeachers();
     }
@@ -207,5 +205,8 @@
 
     // LANGUAGE SWAP, CAPTURE RATINGS, SUBMIT VIBE FORM same as before...
   </script>
+
+  <!-- Additional <script type="module"> for rendering leaderboard and saving feedback intact... -->
+
 </body>
 </html>
