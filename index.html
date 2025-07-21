@@ -214,18 +214,69 @@
   const analytics = getAnalytics(app);
   const db        = getFirestore(app);
 
-  // ── Save one Vibe Check ──
-  window.saveVibeCheck = async function(teacherName, teacherCampus, answers) {
-    const avgScore = Object.values(answers).reduce((a,b) => a + b, 0) 
-                   / Object.values(answers).length;
-    await addDoc(collection(db, "vibeChecks"), {
-      teacherName,
-      teacherCampus,
-      answers,
-      avgScore,
-      ts: serverTimestamp()
-    });
-  };
+ <script>
+  async function saveVibeCheck() {
+    try {
+      // 1) Grab selections
+      const teacherName   = document.querySelector('#teacher')?.value || '';
+      const teacherCampus = document.querySelector('#campus')?.value  || '';
+      if (!teacherName || !teacherCampus) {
+        alert('Please select both a teacher and a campus.');
+        return;
+      }
+
+      // 2) Gather the 6 emoji answers
+      const answers = {};
+      ['T','H','R','I','V','E'].forEach(dim => {
+        const btn = document.querySelector(`.question-block[data-code="${dim}"] .emoji-btn.selected`);
+        answers[dim] = btn ? parseInt(btn.dataset.rating, 10) : 0;
+      });
+
+      // 3) Grab the star hype rating
+      const stars = parseInt(document.querySelector('#stars')?.value || 0, 10);
+
+      // 4) Build Firestore REST payload
+      const payload = {
+        fields: {
+          teacherName:   { stringValue: teacherName },
+          teacherCampus: { stringValue: teacherCampus },
+          answers: {
+            mapValue: {
+              fields: Object.fromEntries(
+                Object.entries(answers).map(([k,v]) => [k, { integerValue: v }])
+              )
+            }
+          },
+          stars: { integerValue: stars },
+          ts:    { timestampValue: new Date().toISOString() }
+        }
+      };
+
+      // 5) POST to Firestore
+      const res = await fetch(
+        'https://firestore.googleapis.com/v1/projects/ithriveincas/databases/(default)/documents/vibeChecks?key=AIzaSyDd6uaoLk-6BDL7b4NggCYz5NErUzFFWk',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        }
+      );
+      if (!res.ok) {
+        console.error('Firestore error', await res.json());
+        alert('Error saving your response. Try again.');
+        return;
+      }
+
+      alert('Thanks! Your response was submitted.');
+      console.log('Submitted for', teacherName);
+      // (optional) reset form or navigate home here
+
+    } catch (err) {
+      console.error('Submission failed', err);
+      alert('Unexpected error—please try again.');
+    }
+  }
+</script>
 
   // ── Real-time Leaderboard Listener ──
   function startLeaderboardListener() {
