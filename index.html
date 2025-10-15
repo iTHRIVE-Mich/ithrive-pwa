@@ -214,8 +214,6 @@
   const analytics = getAnalytics(app);
   const db        = getFirestore(app);
 
-  
-
   // ── Real-time Leaderboard Listener ──
   function startLeaderboardListener() {
     const start = new Date("2025-07-21T00:00:00");
@@ -341,10 +339,10 @@
     </section>
 
     <!-- PAGE 3:  SELECT -->
-    <section id="page-" class="page">
+    <section id="page-teacher" class="page">
       <button class="btn submit" onclick="goTo('page-campus')">← Back</button>
       <h2>Ready. Tap. Thrive.</h2>
-      <div id="-list" class="grid"></div>
+      <div id="teacher-list" class="grid"></div>
     </section>
 
     <!-- PAGE 4: THRIVE CHECK QUESTIONS -->
@@ -568,7 +566,7 @@
       function goTo(id) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        if (id === 'page-') shows();
+        if (id === 'page-teacher') showTeachers();
         if (id === 'page-questions') {
           document.querySelector('#page-questions .thanks-msg').style.display = 'none';
           document.querySelectorAll('.emoji-btn.selected').forEach(b => b.classList.remove('selected'));
@@ -588,12 +586,12 @@
           document.querySelectorAll('.campus-thumb').forEach(x => x.classList.remove('selected'));
           el.classList.add('selected');
           window.selectedCampus = el.dataset.campus;
-          goTo('page-');
+          goTo('page-teacher');
         };
       });
 
       // SHOW S
-      const Map = {
+      const teacherMap = {
            Main: [
         "REYNALDO","SANDRA","RONA","MAR","MERCY","NELIA","ISHTIN","NOELYN","FENDIE","SHEILOU","JOHNY","FAE","LALAINE","JEROME","CLARENCE","ECO","ANGE","CLAUDE",
         "AIRLYN","BABY JANE","BARREN","CHRISLYN","CINDY","CRISTINA","DAWN","DEAN MICH","EDCEL","EDZEILEN","FELINA","FERNAND",
@@ -610,8 +608,8 @@
         "ANNE MARIE","ARLYN","BREENJAMIL","COLLEEN","JESSICA","JET","JIM","MAY","FELIX","ROVIE","ROWELL"
       ]
     };
-      const Photos = Object.fromEntries(
-        Object.entries(Map).flatMap(([campus,list]) =>
+      const teacherPhotos = Object.fromEntries(
+        Object.entries(teacherMap).flatMap(([campus,list]) =>
           list.map(name => [name, `https://raw.githubusercontent.com/iTHRIVE-Mich/ithrive-pwa/main/${encodeURIComponent(name)}.png`])
         )
       );
@@ -774,10 +772,10 @@ const firebaseConfig = {
         top5.forEach(({name,campus},i) => {
           const li = document.createElement("li");
           li.innerHTML = `
-            <img src="${Photos2[name]}" alt="${name}" class="leader-img"/>
+            <img src="${teacherPhotos2[name]}" alt="${name}" class="leader-img"/>
             <div class="leader-info">
               <div class="leader-name">${name}</div>
-              <div class="leader-campus">${campus}</div>
+              <div class="leader-campus">${c2 = campus}</div>
             </div>
             <div class="leader-rank">${i+1}</div>
           `;
@@ -876,7 +874,7 @@ setInterval(() => {
 
       // 5) POST via REST
       const res = await fetch(
-        'https://firestore.googleapis.com/v1/projects/ithriveincas/databases/(default)/documents/vibeChecks?key=AIzaSyDd6uaoLk-6BDL7b4NggCYz5NErUzFFWk',
+        'https://firestore.googleapis.com/v1/projects/ithriveincas/databases/(default)/documents/vibeChecks?key=AIzaSyDd6uaoLk-6BDL7b4NggCYQz5NErUzFFWk',
         {
           method: 'POST',
           headers: { 'Content-Type':'application/json' },
