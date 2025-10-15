@@ -594,9 +594,12 @@
 
       // SHOW TEACHERS
       const teacherMap = {
-        Main: ["Reynaldo","Sandra","Rona","Mar","Mercy","Nelia","Ishtin","Noelyn","Fendie","Sheilou","Robin","Johny","Fae","Lalaine","Lovely","Jerome","Joshua","Clarence","Eco","Ange","Claude"],
-        South: ["Jayhard","Edwin","Lyka","Henry","Elsie"],
-        "San Jose": ["Dawn","Christine","Beverly","Philip","Bryan","Yves"]
+        Main: ["Reynaldo","Sandra","Rona","Mar","Mercy","Nelia","Ishtin","Noelyn","Fendie","Sheilou","Johny","Fae","Lalaine","Lovely","Jerome","Clarence","Eco","Ange","Claude","AIRLYN","ANGELOU","BABY JANE","BARREN","CHRISLYN","CINDY","CLARENCE","CLAUDE","CRISTINA","DAWN","DEAN MICH","EDCEL","EDZEILEN","FAE","FELINA","FERNAND","FREDDIE","GENEREI","GRACHEL","IVETTE","JANIEL","JANZEN","JAYHARD","JERICO","JEROME","JOHNY","JJUSTIN","KARREN","KING","LALAINE","MARIELLE","MARY JOY","MAYBELYN","MERCEDES","NELIA","NOELYN","PRINCESS","RANNIE","RAQUEL","REGHIE","REY","RICA","ROCHELLE","RONA","SANDRA","SHEILU","SHINE","STEFFANIE"]
+,
+        South: ["Jayhard","Edwin","Lyka","Henry","Elsie","Aileen","Bong","Dexter","Florendo","Giezel","Jellie","Jennifer","Kenneth","Lovely","Mark Henry","Nikka","Shierwin"]
+,
+        "San Jose": ["Christine","Beverly","Philip","Bryan","Yves","Anne Marie","Arlyn","Breenjamil","Colleen","Jessica","Jet","Jim","May","Philip R.",","Rovie","Rowell"]
+
       };
       const teacherPhotos = Object.fromEntries(
         Object.entries(teacherMap).flatMap(([campus,list]) =>
@@ -674,9 +677,11 @@ const firebaseConfig = {
 
       // 2) Teacher → Photo & Campus
       const teacherMap2 = {
-        Main:    ["Reynaldo","Sandra","Rona","Mar","Mercy","Nelia","Ishtin","Noelyn","Fendie","Sheilou","Robin","Johny","Fae","Lalaine","Lovely","Jerome","Joshua","Clarence","Eco","Ange"],
-        South:   ["Jayhard","Edwin","Lyka","Henry","Elsie"],
-        "San Jose": ["Dawn","Christine","Beverly","Philip","Bryan","Yves"]
+          Main: ["Reynaldo","Sandra","Rona","Mar","Mercy","Nelia","Ishtin","Noelyn","Fendie","Sheilou","Johny","Fae","Lalaine","Lovely","Jerome","Clarence","Eco","Ange","Claude","AIRLYN","ANGELOU","BABY JANE","BARREN","CHRISLYN","CINDY","CLARENCE","CLAUDE","CRISTINA","DAWN","DEAN MICH","EDCEL","EDZEILEN","FAE","FELINA","FERNAND","FREDDIE","GENEREI","GRACHEL","IVETTE","JANIEL","JANZEN","JAYHARD","JERICO","JEROME","JOHNY","JJUSTIN","KARREN","KING","LALAINE","MARIELLE","MARY JOY","MAYBELYN","MERCEDES","NELIA","NOELYN","PRINCESS","RANNIE","RAQUEL","REGHIE","REY","RICA","ROCHELLE","RONA","SANDRA","SHEILU","SHINE","STEFFANIE"]
+,
+        South: ["Jayhard","Edwin","Lyka","Henry","Elsie","Aileen","Bong","Dexter","Florendo","Giezel","Jellie","Jennifer","Kenneth","Lovely","Mark Henry","Nikka","Shierwin"]
+,
+        "San Jose": ["Christine","Beverly","Philip","Bryan","Yves","Anne Marie","Arlyn","Breenjamil","Colleen","Jessica","Jet","Jim","May","Philip R.",","Rovie","Rowell"]
       };
       const teacherPhotos2 = Object.fromEntries(
         Object.entries(teacherMap2).flatMap(([campus,list]) =>
